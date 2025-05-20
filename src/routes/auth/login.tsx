@@ -3,7 +3,6 @@ import type { AnyRoute } from "@tanstack/react-router";
 import { useAppForm } from "../../hooks/use-app-form";
 import { z } from "zod";
 import { useLogin } from "@/hooks/use-auth";
-import axios from "axios";
 
 const loginSchema = z.object({
   email: z
@@ -57,12 +56,10 @@ const LoginPage = () => {
   });
 
   const errorMessage = loginMutation.error
-    ? axios.isAxiosError(loginMutation.error)
-      ? `${loginMutation.error.response?.status ?? ""} ${
-          loginMutation.error.response?.data?.description || "Login failed"
-        }`
-      : "Network error"
-    : null;
+  ? `${loginMutation.error.response?.status ?? ""} ${
+      loginMutation.error.response?.data.description || "Login failed"
+    }`
+  : null;
 
   return (
     <div className="flex items-center w-100 justify-center min-h-screen">

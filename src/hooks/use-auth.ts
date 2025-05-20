@@ -1,48 +1,40 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from "../lib/api";
+import type { AxiosError } from "axios";
+import {
+  api,
+  type ApiError,
+  type RegisterRequest,
+  type RegisterResponse,
+  type LoginRequest,
+  type LoginResponse,
+  type ForgotPasswordRequest,
+  type ForgotPasswordResponse,
+  type ResetPasswordRequest,
+  type ResetPasswordResponse,
+  type CurrentUserResponse,
+  type LogoutResponse,
+} from "@/lib/api";
 import { useAuthStore, type User } from "../store/auth";
 
-type RegisterPayload = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-type LoginPayload = {
-  email: string;
-  password: string;
-};
-
-type ForgotPasswordPayload = {
-  email: string;
-};
-
-type ResetPasswordPayload = {
-  token: string;
-  password: string;
-};
-
-type LoginResponse = {
-  pid: string;
-  name: string;
-  is_verified: boolean;
-};
-
 export const useRegister = () => {
-  return useMutation({
-    mutationFn: (userData: RegisterPayload) =>
-      api.post("/auth/register", userData),
+  return useMutation<
+    RegisterResponse,
+    AxiosError<ApiError, RegisterRequest>,
+    RegisterRequest
+  >({
+    mutationFn: (userData) => api.register(userData),
   });
 };
 
 export const useLogin = () => {
   const { setAuthenticated, setUser } = useAuthStore();
 
-  return useMutation({
-    mutationFn: async (credentials: LoginPayload) => {
-      const { data } = await api.post<LoginResponse>("/auth/login", credentials);
-      return data;
-    },
+  return useMutation<
+    LoginResponse,
+    AxiosError<ApiError, LoginRequest>,
+    LoginRequest
+  >({
+    mutationFn: (credentials) => api.login(credentials),
     onSuccess: (data, variables) => {
       setAuthenticated(true);
       setUser({
@@ -56,26 +48,29 @@ export const useLogin = () => {
 };
 
 export const useForgotPassword = () => {
-  return useMutation({
-    mutationFn: (payload: ForgotPasswordPayload) =>
-      api.post("/auth/forgot", payload),
+  return useMutation<
+    ForgotPasswordResponse,
+    AxiosError<ApiError, ForgotPasswordRequest>,
+    ForgotPasswordRequest
+  >({
+    mutationFn: (payload) => api.forgotPassword(payload),
   });
 };
 
 export const useResetPassword = () => {
-  return useMutation({
-    mutationFn: (payload: ResetPasswordPayload) =>
-      api.post("/auth/reset", payload),
+  return useMutation<
+    ResetPasswordResponse,
+    AxiosError<ApiError, ResetPasswordResponse>,
+    ResetPasswordRequest
+  >({
+    mutationFn: (payload) => api.resetPassword(payload),
   });
 };
 
 export const useCurrentUser = () => {
-  return useQuery({
+  return useQuery<CurrentUserResponse, AxiosError<ApiError, undefined>>({
     queryKey: ["currentUser"],
-    queryFn: async () => {
-      const { data } = await api.get<User>("/auth/current");
-      return data;
-    },
+    queryFn: () => api.currentUser(),
   });
 };
 
@@ -83,8 +78,9 @@ export const useLogout = () => {
   const { logout } = useAuthStore();
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<LogoutResponse, AxiosError<ApiError, undefined>>({
     mutationFn: async () => {
+      await api.logout();
       logout();
     },
     onSuccess: () => {

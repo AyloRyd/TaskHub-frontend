@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { AnyRoute } from "@tanstack/react-router";
 
 function TanStackQueryDemo() {
-  const { data } = useQuery({
+  const { data: _ } = useQuery({
     queryKey: ["people"],
     queryFn: () =>
       Promise.resolve([{ name: "John Doe" }, { name: "Jane Doe" }]),
@@ -12,14 +12,7 @@ function TanStackQueryDemo() {
   });
 
   return (
-    <div className="p-4 w-full mt-15">
-      <h1 className="text-2xl mb-4">People list</h1>
-      <ul>
-        {data.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    </div>
+    <div className="flex h-screen w-full items-center justify-center text-2xl font-bold text-stone-200 bg-taskhub-light"></div>
   );
 }
 

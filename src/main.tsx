@@ -18,7 +18,7 @@ import LoginRoute from "./routes/auth/login.tsx";
 import RegisterRoute from "./routes/auth/register.tsx";
 import ConfirmEmailRoute from "./routes/auth/confirm-email.tsx";
 
-import AppSidebar from "./components/AppSidebar.tsx";
+import AppSidebar from "./components/sidebar/AppSidebar.tsx";
 
 import { ChevronLeft } from "lucide-react";
 

@@ -2,7 +2,6 @@ import { createRoute, Link, useNavigate } from "@tanstack/react-router";
 import type { AnyRoute } from "@tanstack/react-router";
 import { useAppForm } from "../../hooks/use-app-form";
 import { z } from "zod";
-import axios from "axios";
 import { useRegister } from "../../hooks/use-auth";
 
 const registerSchema = z
@@ -29,7 +28,6 @@ const registerSchema = z
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-
   const registerMutation = useRegister();
 
   const form = useAppForm({
@@ -71,13 +69,10 @@ const RegisterPage = () => {
   });
 
   const errorMessage = registerMutation.error
-    ? axios.isAxiosError(registerMutation.error)
-      ? `${registerMutation.error.response?.status || ""} ${
-          registerMutation.error.response?.data?.message ||
-          "Registration failed"
-        }`
-      : "Network error"
-    : null;
+  ? `${registerMutation.error.response?.status ?? ""} ${
+      registerMutation.error.response?.data.description || "Registration failed"
+    }`
+  : null;
 
   return (
     <div className="flex items-center w-100 justify-center min-h-screen">

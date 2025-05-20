@@ -31,7 +31,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.removeItem("auth");
     }
     set({ isAuthenticated: value });
-    alert(value);
   },
 
   setUser: (user) => {

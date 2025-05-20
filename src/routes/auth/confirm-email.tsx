@@ -1,36 +1,26 @@
 import { createRoute, useNavigate, type AnyRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/use-auth";
-import { useAuthStore } from "@/store/auth";
 import { useMutation } from "@tanstack/react-query";
 
 export function ConfirmEmailPage() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuthStore();
   const { data: user, refetch } = useCurrentUser();
 
-  const verificationMutation = useMutation({
+  const { mutate: checkVerification, error, isError, isPending } = useMutation({
     mutationFn: async () => {
-      if (!isAuthenticated) {
-        throw new Error("You must verify email to continue.");
-      }
-      
       await refetch();
       
       if (!user?.is_verified) {
-        throw new Error("Email not verified yet. Please check your inbox.");
+        throw new Error("You must verify email to continue.");
       }
       
       return true;
     },
     onSuccess: () => {
-      navigate({ to: "/" });
+      navigate({ to: "/auth/login" });
     }
   });
-
-  const handleContinue = () => {
-    verificationMutation.mutate();
-  };
 
   return (
     <div className="flex items-center w-100 justify-center min-h-screen">
@@ -43,16 +33,16 @@ export function ConfirmEmailPage() {
           </p>
         </div>
         
-        {verificationMutation.isError && (
+        {isError && (
           <div className="text-red-400 mt-8 text-center">
-            {verificationMutation.error?.message || "An error occurred"}
+            {error?.message || "An error occurred"}
           </div>
         )}
         
         <div className="mt-8 flex justify-center">
           <Button
-            onClick={handleContinue}
-            disabled={verificationMutation.isPending}
+            onClick={() => checkVerification()}
+            disabled={isPending}
             className="
               cursor-pointer w-full py-6 text-lg rounded-xl
               bg-gradient-to-br from-slate-900 to-red-900
@@ -62,7 +52,7 @@ export function ConfirmEmailPage() {
               font-bold
             "
           >
-            {verificationMutation.isPending ? "Checking..." : "Continue"}
+            {isPending ? "Checking..." : "Continue"}
           </Button>
         </div>
       </div>
