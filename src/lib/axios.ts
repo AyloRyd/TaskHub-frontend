@@ -4,7 +4,7 @@ import axios, { type AxiosInstance } from "axios";
 const _axios: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "https://taskhub.linerds.us/api",
   headers: { "Content-Type": "application/json" },
-  // withCredentials: true,
+  withCredentials: true,
 });
 
 _axios.interceptors.response.use(

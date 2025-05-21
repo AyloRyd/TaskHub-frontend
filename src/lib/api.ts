@@ -47,77 +47,78 @@ export type LogoutResponse = unknown; // TODO: replace `unknown` with real type 
 export class api {
   private static client = _axios;
 
-  private static async fetch<
-    TResponse,
-    TPayload = undefined,
-    TParams = undefined
-  >(
-    method: "get" | "post" | "put" | "delete",
-    url: string,
-    payload?: TPayload,
-    params?: TParams
-  ): Promise<TResponse> {
+  static async register(payload: RegisterRequest): Promise<RegisterResponse> {
     try {
-      const response =
-        method === "get"
-          ? await this.client.get<TResponse>(url, { params })
-          : method === "post"
-          ? await this.client.post<TResponse>(url, payload)
-          : method === "put"
-          ? await this.client.put<TResponse>(url, payload)
-          : method === "delete"
-          ? await this.client.delete<TResponse>(url, { data: payload, params })
-          : (() => {
-              throw new Error(`Unsupported method: ${method}`);
-            })();
-      return response.data;
+      const { data } = await this.client.post<RegisterResponse>(
+        "/auth/register",
+        payload
+      );
+      return data;
     } catch (e) {
-      throw e as AxiosError<ApiError, TPayload>;
+      throw e as AxiosError<ApiError, RegisterRequest>;
     }
   }
 
-  static register(payload: RegisterRequest): Promise<RegisterResponse> {
-    return this.fetch<RegisterResponse, RegisterRequest>(
-      "post",
-      "/auth/register",
-      payload
-    );
+  static async login(payload: LoginRequest): Promise<LoginResponse> {
+    try {
+      const { data } = await this.client.post<LoginResponse>(
+        "/auth/login",
+        payload
+      );
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError, LoginRequest>;
+    }
   }
 
-  static login(payload: LoginRequest): Promise<LoginResponse> {
-    return this.fetch<LoginResponse, LoginRequest>(
-      "post",
-      "/auth/login",
-      payload
-    );
-  }
-
-  static forgotPassword(
+  static async forgotPassword(
     payload: ForgotPasswordRequest
   ): Promise<ForgotPasswordResponse> {
-    return this.fetch<ForgotPasswordResponse, ForgotPasswordRequest>(
-      "post",
-      "/auth/forgot",
-      payload
-    );
+    try {
+      const { data } = await this.client.post<ForgotPasswordResponse>(
+        "/auth/forgot",
+        payload
+      );
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError, ForgotPasswordRequest>;
+    }
   }
 
-  static resetPassword(
+  static async resetPassword(
     payload: ResetPasswordRequest
   ): Promise<ResetPasswordResponse> {
-    return this.fetch<ResetPasswordResponse, ResetPasswordRequest>(
-      "post",
-      "/auth/reset",
-      payload
-    );
+    try {
+      const { data } = await this.client.post<ResetPasswordResponse>(
+        "/auth/reset",
+        payload
+      );
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError, ResetPasswordRequest>;
+    }
   }
 
-  static currentUser(): Promise<CurrentUserResponse> {
-    return this.fetch<CurrentUserResponse, undefined>("get", "/auth/current");
+  static async currentUser(): Promise<CurrentUserResponse> {
+    try {
+      const { data } = await this.client.get<CurrentUserResponse>(
+        "/auth/current"
+      );
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError, undefined>;
+    }
   }
 
-  static logout(): Promise<LogoutResponse> {
-    // return this.call<LogoutResponse>("post", "/auth/logout");
-    return Promise.resolve(null);
+  static async logout(): Promise<LogoutResponse> {
+    try {
+      // const { data } = await this.client.post<LogoutResponse>(
+      //   "/auth/logout"
+      // );
+      // return data;
+      return null;
+    } catch (e) {
+      throw e as AxiosError<ApiError, undefined>;
+    }
   }
 }
