@@ -1,9 +1,15 @@
 import { useAuthStore } from "@/store/auth";
 import axios, { type AxiosInstance } from "axios";
 
-const _axios: AxiosInstance = axios.create({
+export const _axios: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "https://taskhub.linerds.us/api",
   headers: { "Content-Type": "application/json" },
+});
+
+export const _axios_cred: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "https://taskhub.linerds.us/api",
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 _axios.interceptors.response.use(
@@ -15,5 +21,3 @@ _axios.interceptors.response.use(
     return Promise.reject(err);
   }
 );
-
-export default _axios;
