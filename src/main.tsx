@@ -17,6 +17,7 @@ import TanStackQueryDemo from "./routes/demo.tanstack-query.tsx";
 import LoginRoute from "./routes/auth/login.tsx";
 import RegisterRoute from "./routes/auth/register.tsx";
 import ConfirmEmailRoute from "./routes/auth/confirm-email.tsx";
+import VerificationCompleteRoute from "./routes/auth/verification-complete.tsx";
 
 import AppSidebar from "./components/sidebar/AppSidebar.tsx";
 
@@ -110,6 +111,7 @@ const routeTree = rootRoute.addChildren([
     LoginRoute(authLayoutRoute),
     RegisterRoute(authLayoutRoute),
     ConfirmEmailRoute(authLayoutRoute),
+    VerificationCompleteRoute(authLayoutRoute)
   ]),
 ]);
 

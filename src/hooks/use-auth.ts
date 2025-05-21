@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import {
   api,
   type ApiError,
@@ -67,12 +67,25 @@ export const useResetPassword = () => {
   });
 };
 
-export const useCurrentUser = () => {
+export const useDelete = () => {
+  const { logout } = useAuthStore();
+  const queryClient = useQueryClient();
+
+  return useMutation<unknown, AxiosError<ApiError, unknown>, void>({
+    mutationFn: () => api.delete(),
+    onSuccess: () => {
+      logout();
+      queryClient.removeQueries({ queryKey: ["currentUser"] });
+    },
+  });
+};
+
+export const useCurrent = () => {
   const { isAuthenticated } = useAuthStore();
 
   return useQuery<CurrentUserResponse, AxiosError<ApiError, undefined>>({
     queryKey: ["currentUser"],
-    queryFn: () => api.currentUser(),
+    queryFn: () => api.current(),
     enabled: isAuthenticated !== false,
   });
 };

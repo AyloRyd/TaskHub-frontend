@@ -131,7 +131,7 @@ const RegisterPage = () => {
               <p>Already have an account?</p>
               <Link
                 to="/auth/login"
-                className="text-slate-600 font-bold ml-2 hover:underline hover:text-slate-500"
+                className="text-slate-500 font-bold ml-2 hover:underline hover:text-slate-400 transition-all duration-500 ease-in-out"
               >
                 Login!
               </Link>

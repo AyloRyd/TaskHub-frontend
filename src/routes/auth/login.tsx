@@ -107,7 +107,7 @@ const LoginPage = () => {
               <p>Don't have an account?</p>
               <Link
                 to="/auth/register"
-                className="text-slate-400 font-bold ml-2 hover:underline hover:text-slate-300"
+                className="text-slate-500 font-bold ml-2 hover:underline hover:text-slate-400 transition-all duration-500 ease-in-out"
               >
                 Register!
               </Link>

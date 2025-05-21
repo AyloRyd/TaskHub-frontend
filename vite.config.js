@@ -15,5 +15,15 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
     },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://taskhub.linerds.us',
+        changeOrigin: true,
+        secure: false,
+        rewrite: path => path.replace(/^\/api/, '/api'),
+      }
+    }
   }
 });

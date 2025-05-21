@@ -99,7 +99,18 @@ export class api {
     }
   }
 
-  static async currentUser(): Promise<CurrentUserResponse> {
+  static async delete(): Promise<unknown> {
+    try {
+      const { data } = await this.client.post<unknown>(
+        "/auth/delete"
+      );
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError>;
+    }
+  }
+
+  static async current(): Promise<CurrentUserResponse> {
     try {
       const { data } = await this.client.get<CurrentUserResponse>(
         "/auth/current"
@@ -112,9 +123,7 @@ export class api {
 
   static async logout(): Promise<LogoutResponse> {
     try {
-      const { data } = await this.client.post<LogoutResponse>(
-        "/auth/logout"
-      );
+      const { data } = await this.client.post<LogoutResponse>("/auth/logout");
       return data;
     } catch (e) {
       throw e as AxiosError<ApiError, undefined>;
