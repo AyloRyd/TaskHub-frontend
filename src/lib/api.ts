@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { _axios, _axios_cred } from "./axios";
+import _axios from "./axios";
 
 export interface ApiError {
   error: string;
@@ -46,7 +46,6 @@ export type LogoutResponse = unknown; // TODO: replace `unknown` with real type 
 
 export class api {
   private static client = _axios;
-  private static client_cred = _axios_cred;
 
   private static async fetch<
     TResponse,
@@ -56,20 +55,18 @@ export class api {
     method: "get" | "post" | "put" | "delete",
     url: string,
     payload?: TPayload,
-    params?: TParams,
-    credentials: boolean = false
+    params?: TParams
   ): Promise<TResponse> {
     try {
-      const client = credentials === true ? this.client_cred : this.client
       const response =
         method === "get"
-          ? await client.get<TResponse>(url, { params })
+          ? await this.client.get<TResponse>(url, { params })
           : method === "post"
-          ? await client.post<TResponse>(url, payload)
+          ? await this.client.post<TResponse>(url, payload)
           : method === "put"
-          ? await client.put<TResponse>(url, payload)
+          ? await this.client.put<TResponse>(url, payload)
           : method === "delete"
-          ? await client.delete<TResponse>(url, { data: payload, params })
+          ? await this.client.delete<TResponse>(url, { data: payload, params })
           : (() => {
               throw new Error(`Unsupported method: ${method}`);
             })();
