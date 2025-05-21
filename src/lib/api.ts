@@ -55,31 +55,21 @@ export class api {
     method: "get" | "post" | "put" | "delete",
     url: string,
     payload?: TPayload,
-    params?: TParams,
-    options?: { withCredentials?: boolean }
+    params?: TParams
   ): Promise<TResponse> {
     try {
-      const config = {
-        params,
-        withCredentials: options?.withCredentials ?? false,
-      };
-
       const response =
         method === "get"
-          ? await this.client.get<TResponse>(url, config)
+          ? await this.client.get<TResponse>(url, { params })
           : method === "post"
-          ? await this.client.post<TResponse>(url, payload, config)
+          ? await this.client.post<TResponse>(url, payload)
           : method === "put"
-          ? await this.client.put<TResponse>(url, payload, config)
+          ? await this.client.put<TResponse>(url, payload)
           : method === "delete"
-          ? await this.client.delete<TResponse>(url, {
-              ...config,
-              data: payload,
-            })
+          ? await this.client.delete<TResponse>(url, { data: payload, params })
           : (() => {
               throw new Error(`Unsupported method: ${method}`);
             })();
-
       return response.data;
     } catch (e) {
       throw e as AxiosError<ApiError, TPayload>;
@@ -122,14 +112,14 @@ export class api {
     );
   }
 
-  static currentUser(): Promise<CurrentUserResponse> {
-    return this.fetch<CurrentUserResponse, undefined>(
-      "get",
+  static async currentUser(): Promise<CurrentUserResponse> {
+    const response = await this.client.get<CurrentUserResponse>(
       "/auth/current",
-      undefined,
-      undefined,
-      { withCredentials: true }
+      {
+        withCredentials: true,
+      }
     );
+    return response.data;
   }
 
   static logout(): Promise<LogoutResponse> {
