@@ -1,5 +1,5 @@
-// import { useAuthStore } from "@/store/auth";
-import axios, { type AxiosInstance, AxiosError } from "axios";
+import { AxiosError } from "axios";
+import _axios from "./axios";
 
 export interface ApiError {
   error: string;
@@ -44,97 +44,80 @@ export type CurrentUserResponse = User;
 
 export type LogoutResponse = unknown; // TODO: replace `unknown` with real type later
 
-const _axios: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://taskhub.linerds.us/api",
-  headers: { "Content-Type": "application/json" },
-  // withCredentials: true,
-});
-
-// _axios.interceptors.response.use(
-//   (resp) => resp,
-//   (err) => {
-//     if (axios.isAxiosError(err) && err.response?.status === 401) {
-//       useAuthStore.getState().logout();
-//     }
-//     return Promise.reject(err);
-//   }
-// );
-
 export class api {
   private static client = _axios;
 
-  static async register(payload: RegisterRequest): Promise<RegisterResponse> {
+  private static async fetch<
+    TResponse,
+    TPayload = undefined,
+    TParams = undefined
+  >(
+    method: "get" | "post" | "put" | "delete",
+    url: string,
+    payload?: TPayload,
+    params?: TParams
+  ): Promise<TResponse> {
     try {
-      const { data } = await this.client.post<RegisterResponse>(
-        "/auth/register",
-        payload
-      );
-      return data;
+      const response =
+        method === "get"
+          ? await this.client.get<TResponse>(url, { params })
+          : method === "post"
+          ? await this.client.post<TResponse>(url, payload)
+          : method === "put"
+          ? await this.client.put<TResponse>(url, payload)
+          : method === "delete"
+          ? await this.client.delete<TResponse>(url, { data: payload, params })
+          : (() => {
+              throw new Error(`Unsupported method: ${method}`);
+            })();
+      return response.data;
     } catch (e) {
-      throw e as AxiosError<ApiError, RegisterRequest>;
+      throw e as AxiosError<ApiError, TPayload>;
     }
   }
 
-  static async login(payload: LoginRequest): Promise<LoginResponse> {
-    try {
-      const { data } = await this.client.post<LoginResponse>(
-        "/auth/login",
-        payload
-      );
-      return data;
-    } catch (e) {
-      throw e as AxiosError<ApiError, LoginRequest>;
-    }
+  static register(payload: RegisterRequest): Promise<RegisterResponse> {
+    return this.fetch<RegisterResponse, RegisterRequest>(
+      "post",
+      "/auth/register",
+      payload
+    );
   }
 
-  static async forgotPassword(
+  static login(payload: LoginRequest): Promise<LoginResponse> {
+    return this.fetch<LoginResponse, LoginRequest>(
+      "post",
+      "/auth/login",
+      payload
+    );
+  }
+
+  static forgotPassword(
     payload: ForgotPasswordRequest
   ): Promise<ForgotPasswordResponse> {
-    try {
-      const { data } = await this.client.post<ForgotPasswordResponse>(
-        "/auth/forgot",
-        payload
-      );
-      return data;
-    } catch (e) {
-      throw e as AxiosError<ApiError, ForgotPasswordRequest>;
-    }
+    return this.fetch<ForgotPasswordResponse, ForgotPasswordRequest>(
+      "post",
+      "/auth/forgot",
+      payload
+    );
   }
 
-  static async resetPassword(
+  static resetPassword(
     payload: ResetPasswordRequest
   ): Promise<ResetPasswordResponse> {
-    try {
-      const { data } = await this.client.post<ResetPasswordResponse>(
-        "/auth/reset",
-        payload
-      );
-      return data;
-    } catch (e) {
-      throw e as AxiosError<ApiError, ResetPasswordRequest>;
-    }
+    return this.fetch<ResetPasswordResponse, ResetPasswordRequest>(
+      "post",
+      "/auth/reset",
+      payload
+    );
   }
 
-  static async currentUser(): Promise<CurrentUserResponse> {
-    try {
-      const { data } = await this.client.get<CurrentUserResponse>(
-        "/auth/current"
-      );
-      return data;
-    } catch (e) {
-      throw e as AxiosError<ApiError, undefined>;
-    }
+  static currentUser(): Promise<CurrentUserResponse> {
+    return this.fetch<CurrentUserResponse, undefined>("get", "/auth/current");
   }
 
-  static async logout(): Promise<LogoutResponse> {
-    try {
-      // const { data } = await this.client.post<LogoutResponse>(
-      //   "/auth/logout"
-      // );
-      // return data;
-      return null;
-    } catch (e) {
-      throw e as AxiosError<ApiError, undefined>;
-    }
+  static logout(): Promise<LogoutResponse> {
+    // return this.call<LogoutResponse>("post", "/auth/logout");
+    return Promise.resolve(null);
   }
 }
