@@ -112,11 +112,10 @@ export class api {
 
   static async logout(): Promise<LogoutResponse> {
     try {
-      // const { data } = await this.client.post<LogoutResponse>(
-      //   "/auth/logout"
-      // );
-      // return data;
-      return null;
+      const { data } = await this.client.post<LogoutResponse>(
+        "/auth/logout"
+      );
+      return data;
     } catch (e) {
       throw e as AxiosError<ApiError, undefined>;
     }

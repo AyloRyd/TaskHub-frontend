@@ -68,9 +68,12 @@ export const useResetPassword = () => {
 };
 
 export const useCurrentUser = () => {
+  const { isAuthenticated } = useAuthStore();
+
   return useQuery<CurrentUserResponse, AxiosError<ApiError, undefined>>({
     queryKey: ["currentUser"],
     queryFn: () => api.currentUser(),
+    enabled: isAuthenticated !== false,
   });
 };
 
