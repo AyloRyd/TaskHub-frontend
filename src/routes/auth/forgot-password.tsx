@@ -27,8 +27,8 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
   const forgotPasswordMutation = useForgotPassword();
   const { isAuthenticated, user } = useAuthStore();
 
-  if (isAuthenticated) {
-    forgotPasswordMutation.mutateAsync({ email: user?.email });
+  if (isAuthenticated && user?.email) {
+    forgotPasswordMutation.mutateAsync({ email: user.email });
     nextStep();
   }
 
