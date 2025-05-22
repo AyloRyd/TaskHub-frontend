@@ -34,7 +34,7 @@ const registerSchema = z
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: "Passwords do not match.",
-    path: ["confirmPassword"],
+    path: ["confirmNewPassword"],
   });
 
 const ResetPasswordForm = ({ nextStep }: { nextStep: () => void }) => {
