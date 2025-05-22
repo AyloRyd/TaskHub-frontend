@@ -56,10 +56,10 @@ const LoginPage = () => {
   });
 
   const errorMessage = loginMutation.error
-  ? `${loginMutation.error.response?.status ?? ""} ${
-      loginMutation.error.response?.data.description || "Login failed"
-    }`
-  : null;
+    ? `${loginMutation.error.response?.status ?? ""} ${
+        loginMutation.error.response?.data.description || "Login failed"
+      }`
+    : null;
 
   return (
     <div className="flex items-center w-100 justify-center min-h-screen">
@@ -86,6 +86,15 @@ const LoginPage = () => {
           </form.AppField>
 
           {errorMessage && <p className="text-red-400">{errorMessage}</p>}
+
+          <div className="mt-6 w-full flex justify-center text-white">
+            <Link
+              to="/auth/forgot-password"
+              className="text-slate-500 font-bold ml-2 hover:underline hover:text-slate-400 transition-all duration-500 ease-in-out"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           <div className="mt-8">
             <form.AppForm>

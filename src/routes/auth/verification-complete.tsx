@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { createRoute, Link, type AnyRoute } from "@tanstack/react-router";
 
 export function VerificationComplete() {
@@ -12,18 +13,19 @@ export function VerificationComplete() {
         </div>
 
         <div className="mt-8 flex justify-center gap-12">
-          <Link
-            to="/auth/login"
-            className="
-              cursor-pointer py-4 text-center w-full text-lg rounded-xl
-              bg-gradient-to-br from-slate-900 to-red-900
-              bg-[length:200%_200%] bg-[position:0%_0%]
-              hover:bg-[position:100%_100%]
-              transition-all duration-500 ease-in-out
-              font-bold
-            "
-          >
-            Proceed to login
+          <Link to="/auth/login" className="w-full">
+            <Button
+              className="
+                cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
+                bg-gradient-to-br from-slate-900 to-red-900
+                bg-[length:200%_200%] bg-[position:0%_0%]
+                hover:bg-[position:100%_100%]
+                transition-all duration-500 ease-in-out
+                font-bold
+              "
+            >
+              Proceed to login
+            </Button>
           </Link>
         </div>
       </div>
@@ -31,7 +33,7 @@ export function VerificationComplete() {
   );
 }
 
-export default function ConfirmEmailRoute<TParent extends AnyRoute>(
+export default function VerificationCompleteRoute<TParent extends AnyRoute>(
   parentRoute: TParent
 ) {
   return createRoute({
