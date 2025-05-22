@@ -103,7 +103,7 @@ const RegisterPage = () => {
 
           <form.AppField name="confirmPassword">
             {(field) => (
-              <field.PasswordField label="" placeholder="Confirm Password" />
+              <field.PasswordField label="" placeholder="Confirm password" />
             )}
           </form.AppField>
 

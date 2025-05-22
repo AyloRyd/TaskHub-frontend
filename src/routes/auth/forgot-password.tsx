@@ -7,7 +7,7 @@ import { useAppForm } from "@/hooks/use-app-form";
 import { useForgotPassword } from "@/hooks/use-auth";
 import { useSteps } from "@/hooks/use-steps";
 
-const ForgotPassword = () => {
+const ForgotPasswordPage = () => {
   const { step, nextStep } = useSteps(2);
 
   return (
@@ -155,6 +155,6 @@ export default function ForgotPasswordRoute<TParent extends AnyRoute>(
   return createRoute({
     getParentRoute: () => parentRoute,
     path: "/auth/forgot-password",
-    component: ForgotPassword,
+    component: ForgotPasswordPage,
   });
 }

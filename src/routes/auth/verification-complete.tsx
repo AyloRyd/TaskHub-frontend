@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { createRoute, Link, type AnyRoute } from "@tanstack/react-router";
 
-export function VerificationComplete() {
+export function VerificationCompletePage() {
   return (
     <div className="flex items-center w-100 justify-center min-h-screen">
       <div className="w-full max-w-2xl py-12 px-10 rounded-3xl backdrop-blur-md bg-black border-[1px] border-stone-400 text-white">
@@ -39,6 +39,6 @@ export default function VerificationCompleteRoute<TParent extends AnyRoute>(
   return createRoute({
     getParentRoute: () => parentRoute,
     path: "/auth/verification-complete",
-    component: VerificationComplete,
+    component: VerificationCompletePage,
   });
 }

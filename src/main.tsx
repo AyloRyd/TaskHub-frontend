@@ -19,6 +19,7 @@ import RegisterRoute from "./routes/auth/register.tsx";
 import ConfirmEmailRoute from "./routes/auth/confirm-email.tsx";
 import VerificationCompleteRoute from "./routes/auth/verification-complete.tsx";
 import ForgotPasswordRoute from "./routes/auth/forgot-password.tsx";
+import ResetPasswordRoute from "./routes/auth/reset-password.tsx";
 
 import AppSidebar from "./components/sidebar/AppSidebar.tsx";
 
@@ -99,6 +100,7 @@ const routeTree = rootRoute.addChildren([
     ConfirmEmailRoute(authLayoutRoute),
     VerificationCompleteRoute(authLayoutRoute),
     ForgotPasswordRoute(authLayoutRoute),
+    ResetPasswordRoute(authLayoutRoute),
   ]),
 ]);
 
