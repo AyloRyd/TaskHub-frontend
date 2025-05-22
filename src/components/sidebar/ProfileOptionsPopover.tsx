@@ -22,7 +22,7 @@ const ProfileOptionsPopover = () => {
         className="w-full flex items-center gap-4 justify-between h-[5rem] px-6 cursor-pointer rounded-xl text-sm text-stone-200 
                    bg-taskhub-dark hover:bg-taskhub-darker transition-colors duration-200"
       >
-        <div className="flex items-start flex-col justify-center">
+        <div className="flex flex-col items-start justify-center">
           <p className="font-bold">{user?.name}</p>
           <p className="text-stone-500">{user?.email}</p>
         </div>
@@ -39,9 +39,18 @@ const ProfileOptionsPopover = () => {
           onClick={() => {
             if (isMobile) toggleSidebar();
           }}
-          className="text-stone-200 py-4 bg-taskhub-dark hover:bg-taskhub-darker transition-colors duration-200 rounded-xl px-4 py-2"
+          className="px-4 py-2 py-4 transition-colors duration-200 text-stone-200 bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
         >
           Profile
+        </Link>
+        <Link
+          to="/auth/forgot-password"
+          onClick={() => {
+            if (isMobile) toggleSidebar();
+          }}
+          className="px-4 py-2 py-4 transition-colors duration-200 text-stone-200 bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
+        >
+          Reset password
         </Link>
         <Link
           to="/"
@@ -49,7 +58,7 @@ const ProfileOptionsPopover = () => {
             logout();
             if (isMobile) toggleSidebar();
           }}
-          className="text-stone-200 py-4 bg-taskhub-dark hover:bg-taskhub-darker transition-colors duration-200 rounded-xl px-4 py-2"
+          className="px-4 py-2 py-4 transition-colors duration-200 text-stone-200 bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
         >
           Logout
         </Link>
@@ -59,7 +68,7 @@ const ProfileOptionsPopover = () => {
             deleteAccount();
             if (isMobile) toggleSidebar();
           }}
-          className="text-stone-200 py-4 bg-taskhub-dark hover:bg-taskhub-darker transition-colors duration-200 rounded-xl px-4 py-2"
+          className="px-4 py-2 py-4 transition-colors duration-200 text-stone-200 bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
         >
           Delete account
         </Link>

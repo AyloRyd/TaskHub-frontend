@@ -47,7 +47,7 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
         try {
           await forgotPasswordMutation.mutateAsync({ email: value.email });
           nextStep();
-        } catch (error) { }
+        } catch (error) {}
       },
     },
   });
@@ -60,7 +60,7 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
     : null;
 
   return (
-    <div className="flex items-center w-100 justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen w-100">
       <div className="w-full max-w-2xl py-12 px-10 rounded-3xl backdrop-blur-md bg-black border-[1px] border-stone-400">
         <div className="flex flex-col items-start justify-center text-white">
           <h1 className="text-2xl font-bold">Enter your email</h1>
@@ -75,7 +75,7 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-6 mt-8"
+          className="mt-8 space-y-6"
         >
           <form.AppField name="email">
             {(field) => <field.TextField label="" placeholder="Email" />}
@@ -107,16 +107,16 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
 
 const CheckEmail = () => {
   return (
-    <div className="flex items-center w-100 justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen w-100">
       <div className="w-full max-w-2xl py-12 px-10 rounded-3xl backdrop-blur-md bg-black border-[1px] border-stone-400 text-white">
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold">Check your email</h1>
-          <p className="text-center mt-4 text-gray-300">
+          <p className="mt-4 text-center text-gray-300">
             We've sent you a link to reset your password to your e-mail adress!
           </p>
         </div>
 
-        <div className="mt-8 flex justify-center gap-12">
+        <div className="flex justify-center gap-12 mt-8">
           <Button
             onClick={() => window.open("https://mail.google.com", "_blank")}
             className="
