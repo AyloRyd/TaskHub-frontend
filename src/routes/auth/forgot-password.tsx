@@ -11,13 +11,7 @@ const ForgotPassword = () => {
   const { step, nextStep } = useSteps(2);
 
   return (
-    <>
-      {step === 1 ? (
-        <EnterEmail nextStep={nextStep}/>
-      ) : (
-        <CheckEmail />
-      )}
-    </>
+    <>{step === 1 ? <EnterEmail nextStep={nextStep} /> : <CheckEmail />}</>
   );
 };
 
@@ -50,8 +44,10 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
         return errors;
       },
       onSubmit: async ({ value }) => {
-        nextStep();
-        forgotPasswordMutation.mutate({ email: value.email });
+        try {
+          await forgotPasswordMutation.mutateAsync({ email: value.email });
+          nextStep();
+        } catch (error) { }
       },
     },
   });
@@ -69,8 +65,7 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
         <div className="flex flex-col items-start justify-center text-white">
           <h1 className="text-2xl font-bold">Enter your email</h1>
           <h2 className="text-sm">
-            We'll sent you a link to reset your password to your e-mail
-            adress!
+            We'll sent you a link to reset your password to your e-mail adress!
           </h2>
         </div>
 
@@ -91,9 +86,7 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
           <div className="mt-8">
             <form.AppForm>
               <form.SubscribeButton
-                label={
-                  forgotPasswordMutation.isPending ? "Sending..." : "Send"
-                }
+                label={forgotPasswordMutation.isPending ? "Sending..." : "Send"}
                 disabled={forgotPasswordMutation.isPending}
                 className="
                       cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
