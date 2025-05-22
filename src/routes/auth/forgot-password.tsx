@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useForgotPassword } from "@/hooks/use-auth";
 import { useSteps } from "@/hooks/use-steps";
+import { useAuthStore } from "@/store/auth";
 
 const ForgotPasswordPage = () => {
   const { step, nextStep } = useSteps(2);
@@ -24,6 +25,12 @@ const forgotPasswordSchema = z.object({
 
 const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
   const forgotPasswordMutation = useForgotPassword();
+  const { isAuthenticated, user } = useAuthStore();
+
+  if (isAuthenticated) {
+    forgotPasswordMutation.mutateAsync({ email: user?.email });
+    nextStep();
+  }
 
   const form = useAppForm({
     defaultValues: {
