@@ -1,8 +1,27 @@
-import { createRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createRoute, Link } from "@tanstack/react-router";
 import type { AnyRoute } from "@tanstack/react-router";
 import { useAppForm } from "../../hooks/use-app-form";
 import { z } from "zod";
 import { useRegister } from "../../hooks/use-auth";
+import { useSteps } from "@/hooks/use-steps";
+import EmailLinks from "@/components/auth/EmailLinks";
+
+const RegisterPage = () => {
+  const { step, nextStep } = useSteps(2);
+
+  return (
+    <>
+      {step === 1 ? (
+        <RegisterForm nextStep={nextStep} />
+      ) : (
+        <EmailLinks
+          label="We've sent you a verification link — please click it to activate
+            your account."
+        />
+      )}
+    </>
+  );
+};
 
 const registerSchema = z
   .object({
@@ -26,8 +45,7 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-const RegisterPage = () => {
-  const navigate = useNavigate();
+const RegisterForm = ({ nextStep }: { nextStep: () => void }) => {
   const registerMutation = useRegister();
 
   const form = useAppForm({
@@ -60,7 +78,7 @@ const RegisterPage = () => {
           },
           {
             onSuccess: () => {
-              navigate({ to: "/auth/confirm-email" });
+              nextStep();
             },
           }
         );
@@ -69,10 +87,11 @@ const RegisterPage = () => {
   });
 
   const errorMessage = registerMutation.error
-  ? `${registerMutation.error.response?.status ?? ""} ${
-      registerMutation.error.response?.data.description || "Registration failed"
-    }`
-  : null;
+    ? `${registerMutation.error.response?.status ?? ""} ${
+        registerMutation.error.response?.data.description ||
+        "Registration failed"
+      }`
+    : null;
 
   return (
     <div className="flex items-center w-100 justify-center min-h-screen">

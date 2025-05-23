@@ -3,16 +3,17 @@ import { createRoute, Link, type AnyRoute } from "@tanstack/react-router";
 
 export function VerificationCompletePage() {
   return (
-    <div className="flex items-center w-100 justify-center min-h-screen">
-      <div className="w-full max-w-2xl py-12 px-10 rounded-3xl backdrop-blur-md bg-black border-[1px] border-stone-400 text-white">
+    <div className="flex items-center justify-center min-h-screen w-100">
+      <div className="w-full max-w-2xl py-12 px-10 rounded-3xl backdrop-blur-md 
+                      bg-black border-[1px] border-stone-400 text-white">
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold">Congratulations!</h1>
-          <p className="text-center mt-4 text-gray-300">
+          <p className="mt-4 text-center text-gray-300">
             You have successfully verified your email!
           </p>
         </div>
 
-        <div className="mt-8 flex justify-center gap-12">
+        <div className="flex justify-center gap-12 mt-8">
           <Link to="/auth/login" className="w-full">
             <Button
               className="

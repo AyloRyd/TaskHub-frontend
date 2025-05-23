@@ -29,9 +29,14 @@ export function useSteps(totalSteps: number) {
     setStep((prev) => Math.max(1, prev - 1));
   };
 
+  const goToStep = (step: number) => {
+    setStep(Math.max(1, Math.min(step, totalSteps)));
+  }
+
   return {
     step,
     nextStep,
     previousStep,
+    goToStep
   };
 }

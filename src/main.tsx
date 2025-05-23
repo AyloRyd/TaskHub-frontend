@@ -16,7 +16,6 @@ import TanStackQueryDemo from "./routes/demo.tanstack-query.tsx";
 
 import LoginRoute from "./routes/auth/login.tsx";
 import RegisterRoute from "./routes/auth/register.tsx";
-import ConfirmEmailRoute from "./routes/auth/confirm-email.tsx";
 import VerificationCompleteRoute from "./routes/auth/verification-complete.tsx";
 import ForgotPasswordRoute from "./routes/auth/forgot-password.tsx";
 import ResetPasswordRoute from "./routes/auth/reset-password.tsx";
@@ -97,7 +96,6 @@ const routeTree = rootRoute.addChildren([
   authLayoutRoute.addChildren([
     LoginRoute(authLayoutRoute),
     RegisterRoute(authLayoutRoute),
-    ConfirmEmailRoute(authLayoutRoute),
     VerificationCompleteRoute(authLayoutRoute),
     ForgotPasswordRoute(authLayoutRoute),
     ResetPasswordRoute(authLayoutRoute),
