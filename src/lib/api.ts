@@ -39,6 +39,7 @@ export interface User {
   name: string;
   email: string;
   is_verified: boolean;
+  role: "User" | "Admin";
 }
 export type CurrentUserResponse = User;
 

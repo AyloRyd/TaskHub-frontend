@@ -4,7 +4,6 @@ import tailwindcss from "@tailwindcss/vite";
 
 import { resolve } from "node:path";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [viteReact(), tailwindcss()],
   test: {
@@ -16,14 +15,4 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
-  // server: {
-  //   proxy: {
-  //     '/api': {
-  //       target: 'https://taskhub.linerds.us',
-  //       changeOrigin: true,
-  //       secure: false,
-  //       rewrite: path => path.replace(/^\/api/, '/api'),
-  //     }
-  //   }
-  // }
 });

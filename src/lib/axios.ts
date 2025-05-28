@@ -2,7 +2,7 @@ import { useAuthStore } from "@/store/auth";
 import axios, { type AxiosInstance } from "axios";
 
 const _axios: AxiosInstance = axios.create({
-  baseURL: "https://taskhub.linerds.us/api",
+  baseURL: import.meta.env.VITE_API_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
