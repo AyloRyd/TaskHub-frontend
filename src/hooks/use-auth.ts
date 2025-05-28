@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { api, type ApiError } from "@/lib/api";
 import {
-  api,
-  type ApiError,
+  type User,
   type RegisterRequest,
   type RegisterResponse,
   type LoginRequest,
@@ -11,15 +11,18 @@ import {
   type ForgotPasswordResponse,
   type ResetPasswordRequest,
   type ResetPasswordResponse,
+  type DeleteUserRequest,
+  type DeleteUserResponse,
   type CurrentUserResponse,
+  type LogoutRequest,
   type LogoutResponse,
-} from "@/lib/api";
-import { useAuthStore, type User } from "../store/auth";
+} from "@/lib/types";
+import { useAuthStore } from "../store/auth";
 
 export const useRegister = () => {
   return useMutation<
     RegisterResponse,
-    AxiosError<ApiError, RegisterRequest>,
+    AxiosError<ApiError>,
     RegisterRequest
   >({
     mutationFn: (userData) => api.register(userData),
@@ -31,7 +34,7 @@ export const useLogin = () => {
 
   return useMutation<
     LoginResponse,
-    AxiosError<ApiError, LoginRequest>,
+    AxiosError<ApiError>,
     LoginRequest
   >({
     mutationFn: (credentials) => api.login(credentials),
@@ -42,6 +45,7 @@ export const useLogin = () => {
         name: data.name,
         email: variables.email,
         is_verified: data.is_verified,
+        role: data.role,
       } as User);
     },
   });
@@ -50,7 +54,7 @@ export const useLogin = () => {
 export const useForgotPassword = () => {
   return useMutation<
     ForgotPasswordResponse,
-    AxiosError<ApiError, ForgotPasswordRequest>,
+    AxiosError<ApiError>,
     ForgotPasswordRequest
   >({
     mutationFn: (payload) => api.forgotPassword(payload),
@@ -60,7 +64,7 @@ export const useForgotPassword = () => {
 export const useResetPassword = () => {
   return useMutation<
     ResetPasswordResponse,
-    AxiosError<ApiError, ResetPasswordResponse>,
+    AxiosError<ApiError>,
     ResetPasswordRequest
   >({
     mutationFn: (payload) => api.resetPassword(payload),
@@ -71,7 +75,11 @@ export const useDelete = () => {
   const { logout } = useAuthStore();
   const queryClient = useQueryClient();
 
-  return useMutation<unknown, AxiosError<ApiError, unknown>, void>({
+  return useMutation<
+    DeleteUserResponse,
+    AxiosError<ApiError>,
+    DeleteUserRequest
+  >({
     mutationFn: () => api.delete(),
     onSuccess: () => {
       logout();
@@ -83,7 +91,10 @@ export const useDelete = () => {
 export const useCurrent = () => {
   const { isAuthenticated } = useAuthStore();
 
-  return useQuery<CurrentUserResponse, AxiosError<ApiError, undefined>>({
+  return useQuery<
+    CurrentUserResponse,
+    AxiosError<ApiError>
+  >({
     queryKey: ["currentUser"],
     queryFn: () => api.current(),
     enabled: isAuthenticated !== false,
@@ -94,7 +105,11 @@ export const useLogout = () => {
   const { logout } = useAuthStore();
   const queryClient = useQueryClient();
 
-  return useMutation<LogoutResponse, AxiosError<ApiError, undefined>>({
+  return useMutation<
+    LogoutResponse,
+    AxiosError<ApiError>,
+    LogoutRequest
+  >({
     mutationFn: async () => {
       await api.logout();
       logout();

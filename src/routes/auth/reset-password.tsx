@@ -1,25 +1,9 @@
-import {
-  createRoute,
-  Link,
-  useSearch,
-  type AnyRoute,
-} from "@tanstack/react-router";
+import { createRoute, type AnyRoute, Outlet, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { useResetPassword } from "@/hooks/use-auth";
 import { useAppForm } from "@/hooks/use-app-form";
-import { useSteps } from "@/hooks/use-steps";
-import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth";
-
-const ResetPasswordPage = () => {
-  const { step, nextStep } = useSteps(2);
-
-  return (
-    <>
-      {step === 1 ? <ResetPasswordForm nextStep={nextStep} /> : <SuccessPage />}
-    </>
-  );
-};
+import { Button } from "@/components/ui/button";
 
 const registerSchema = z
   .object({
@@ -38,17 +22,13 @@ const registerSchema = z
     path: ["confirmNewPassword"],
   });
 
-const ResetPasswordForm = ({ nextStep }: { nextStep: () => void }) => {
-  const { token } = useSearch({
-    from: "/auth-layout/auth/reset-password",
-  });
+const ResetPasswordForm = () => {
+  const navigate = useNavigate();
+  const { token } = useSearch({ from: "/auth-layout/auth/reset-password" });
   const resetPasswordMutation = useResetPassword();
 
   const form = useAppForm({
-    defaultValues: {
-      newPassword: "",
-      confirmNewPassword: "",
-    },
+    defaultValues: { newPassword: "", confirmNewPassword: "" },
     validators: {
       onBlur: ({ value }) => {
         const errors: { fields: Record<string, string> } = { fields: {} };
@@ -65,15 +45,8 @@ const ResetPasswordForm = ({ nextStep }: { nextStep: () => void }) => {
       },
       onSubmit: async ({ value }) => {
         resetPasswordMutation.mutate(
-          {
-            password: value.newPassword,
-            token: token,
-          },
-          {
-            onSuccess: () => {
-              nextStep();
-            },
-          }
+          { password: value.newPassword, token },
+          { onSuccess: () => navigate({ to: "/auth/reset-password/success", search: { token } }) }
         );
       },
     },
@@ -82,7 +55,7 @@ const ResetPasswordForm = ({ nextStep }: { nextStep: () => void }) => {
   const errorMessage = resetPasswordMutation.error
     ? `${resetPasswordMutation.error.response?.status ?? ""} ${
         resetPasswordMutation.error.response?.data.description ||
-        "Password reseting failed"
+        "Password resetting failed"
       }`
     : null;
 
@@ -109,10 +82,7 @@ const ResetPasswordForm = ({ nextStep }: { nextStep: () => void }) => {
 
           <form.AppField name="confirmNewPassword">
             {(field) => (
-              <field.PasswordField
-                label=""
-                placeholder="Confirm new password"
-              />
+              <field.PasswordField label="" placeholder="Confirm new password" />
             )}
           </form.AppField>
 
@@ -122,17 +92,10 @@ const ResetPasswordForm = ({ nextStep }: { nextStep: () => void }) => {
             <form.AppForm>
               <form.SubscribeButton
                 label={
-                  resetPasswordMutation.isPending ? "Reseting..." : "Reset"
+                  resetPasswordMutation.isPending ? "Resetting..." : "Reset"
                 }
                 disabled={resetPasswordMutation.isPending}
-                className="
-                  cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
-                  bg-gradient-to-br from-slate-900 to-red-900
-                  bg-[length:200%_200%] bg-[position:0%_0%]
-                  hover:bg-[position:100%_100%]
-                  transition-all duration-500 ease-in-out
-                  font-bold
-                "
+                className="cursor-pointer w-full mt-2 py-6 text-lg rounded-xl bg-gradient-to-br from-slate-900 to-red-900 bg-[length:200%_200%] bg-[position:0%_0%] hover:bg-[position:100%_100%] transition-all duration-500 ease-in-out font-bold"
               />
             </form.AppForm>
           </div>
@@ -144,29 +107,19 @@ const ResetPasswordForm = ({ nextStep }: { nextStep: () => void }) => {
 
 const SuccessPage = () => {
   const { isAuthenticated } = useAuthStore();
-
   return (
     <div className="flex items-center justify-center min-h-screen w-100">
       <div className="w-full max-w-2xl py-12 px-10 rounded-3xl backdrop-blur-md bg-black border-[1px] border-stone-400 text-white">
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold">Congratulations!</h1>
           <p className="mt-4 text-center text-gray-300">
-            You have successfully reseted your password!
+            You have successfully reset your password!
           </p>
         </div>
 
         <div className="flex justify-center gap-12 mt-8">
           <Link to={isAuthenticated ? "/" : "/auth/login"} className="w-full">
-            <Button
-              className="
-                cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
-                bg-gradient-to-br from-slate-900 to-red-900
-                bg-[length:200%_200%] bg-[position:0%_0%]
-                hover:bg-[position:100%_100%]
-                transition-all duration-500 ease-in-out
-                font-bold
-              "
-            >
+            <Button className="cursor-pointer w-full mt-2 py-6 text-lg rounded-xl bg-gradient-to-br from-slate-900 to-red-900 bg-[length:200%_200%] bg-[position:0%_0%] hover:bg-[position:100%_100%] transition-all duration-500 ease-in-out font-bold">
               {isAuthenticated ? "Back home" : "Proceed to login"}
             </Button>
           </Link>
@@ -176,17 +129,29 @@ const SuccessPage = () => {
   );
 };
 
+const ResetPasswordLayout = () => <Outlet />
+
 export default function ResetPasswordRoute<TParent extends AnyRoute>(
   parentRoute: TParent
 ) {
-  return createRoute({
+  const resetPasswordRoute = createRoute({
     getParentRoute: () => parentRoute,
     path: "/auth/reset-password",
-    component: ResetPasswordPage,
-    validateSearch: (search: Record<string, unknown>) => {
-      return {
-        token: String(search.token || ""),
-      };
-    },
+    component: ResetPasswordLayout,
+    validateSearch: (search) => ({ token: String(search.token || "") }),
   });
+
+  const formRoute = createRoute({
+    getParentRoute: () => resetPasswordRoute,
+    path: "/",
+    component: ResetPasswordForm,
+  });
+
+  const successRoute = createRoute({
+    getParentRoute: () => resetPasswordRoute,
+    path: "success",
+    component: SuccessPage,
+  });
+
+  return resetPasswordRoute.addChildren([formRoute, successRoute]);
 }

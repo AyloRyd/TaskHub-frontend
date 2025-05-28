@@ -1,26 +1,14 @@
-import { createRoute, type AnyRoute } from "@tanstack/react-router";
+import {
+  createRoute,
+  type AnyRoute,
+  Outlet,
+  useNavigate,
+} from "@tanstack/react-router";
 import { z } from "zod";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useForgotPassword } from "@/hooks/use-auth";
-import { useSteps } from "@/hooks/use-steps";
 import { useAuthStore } from "@/store/auth";
 import EmailLinks from "@/components/auth/EmailLinks";
-
-const ForgotPasswordPage = () => {
-  const { step, nextStep } = useSteps(2);
-
-  return (
-    <>
-      {step === 1 ? (
-        <EnterEmail nextStep={nextStep} />
-      ) : (
-        <EmailLinks
-          label="We've sent you a link to reset your password to your e-mail adress!"
-        />
-      )}
-    </>
-  );
-};
 
 const forgotPasswordSchema = z.object({
   email: z
@@ -29,19 +17,19 @@ const forgotPasswordSchema = z.object({
     .email("Invalid email address."),
 });
 
-const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
+const EnterEmailPage = () => {
+  const navigate = useNavigate();
   const forgotPasswordMutation = useForgotPassword();
   const { isAuthenticated, user } = useAuthStore();
 
   if (isAuthenticated && user?.email) {
-    forgotPasswordMutation.mutateAsync({ email: user.email });
-    nextStep();
+    void forgotPasswordMutation.mutateAsync({ email: user.email }).then(() => {
+      navigate({ to: "/auth/forgot-password/check-email" });
+    });
   }
 
   const form = useAppForm({
-    defaultValues: {
-      email: "",
-    },
+    defaultValues: { email: "" },
     validators: {
       onBlur: ({ value }) => {
         const errors: { fields: Record<string, string> } = { fields: {} };
@@ -61,7 +49,7 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
           { email: value.email },
           {
             onSuccess: () => {
-              nextStep();
+              navigate({ to: "/auth/forgot-password/check-email" });
             },
           }
         );
@@ -82,7 +70,7 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
         <div className="flex flex-col items-start justify-center text-white">
           <h1 className="text-2xl font-bold">Enter your email</h1>
           <h2 className="text-sm">
-            We'll sent you a link to reset your password to your e-mail adress!
+            We'll send you a link to reset your password to your e-mail address!
           </h2>
         </div>
 
@@ -105,14 +93,14 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
               <form.SubscribeButton
                 label={forgotPasswordMutation.isPending ? "Sending..." : "Send"}
                 disabled={forgotPasswordMutation.isPending}
-                className="
-                      cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
-                      bg-gradient-to-br from-slate-900 to-red-900
-                      bg-[length:200%_200%] bg-[position:0%_0%]
-                      hover:bg-[position:100%_100%]
-                      transition-all duration-500 ease-in-out
-                      font-bold
-                    "
+                className={
+                  "cursor-pointer w-full mt-2 py-6 text-lg rounded-xl " +
+                  "bg-gradient-to-br from-slate-900 to-red-900 " +
+                  "bg-[length:200%_200%] bg-[position:0%_0%] " +
+                  "hover:bg-[position:100%_100%] " +
+                  "transition-all duration-500 ease-in-out " +
+                  "font-bold"
+                }
               />
             </form.AppForm>
           </div>
@@ -122,12 +110,32 @@ const EnterEmail = ({ nextStep }: { nextStep: () => void }) => {
   );
 };
 
+const CheckEmailPage = () => (
+  <EmailLinks label="We've sent you a link to reset your password to your e-mail address!" />
+);
+
+const ForgotPasswordLayout = () => <Outlet />;
+
 export default function ForgotPasswordRoute<TParent extends AnyRoute>(
   parentRoute: TParent
 ) {
-  return createRoute({
+  const forgotPasswordRoute = createRoute({
     getParentRoute: () => parentRoute,
     path: "/auth/forgot-password",
-    component: ForgotPasswordPage,
+    component: ForgotPasswordLayout,
   });
+
+  const enterEmailRoute = createRoute({
+    getParentRoute: () => forgotPasswordRoute,
+    path: "/",
+    component: EnterEmailPage,
+  });
+
+  const checkEmailRoute = createRoute({
+    getParentRoute: () => forgotPasswordRoute,
+    path: "check-email",
+    component: CheckEmailPage,
+  });
+
+  return forgotPasswordRoute.addChildren([enterEmailRoute, checkEmailRoute]);
 }

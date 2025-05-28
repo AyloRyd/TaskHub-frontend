@@ -60,7 +60,7 @@ const authLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: () => (
     <div
-      className="relative h-screen p-4 text-white flex items-center justify-center"
+      className="relative flex items-center justify-center h-screen p-4 text-white"
       style={{
         backgroundImage: 'url("/auth-bg.png")',
         backgroundSize: "cover",
@@ -68,7 +68,7 @@ const authLayoutRoute = createRoute({
       }}
     >
       <Link
-        className="absolute top-4 left-4 bg-taskhub-light hover:bg-taskhub-middle rounded-xl p-3"
+        className="absolute p-3 top-4 left-4 bg-taskhub-light hover:bg-taskhub-middle rounded-xl"
         to="/"
       >
         <ChevronLeft size={25} />

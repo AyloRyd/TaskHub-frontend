@@ -1,11 +1,5 @@
 import { create } from "zustand";
-
-export interface User {
-  pid: string;
-  name: string;
-  email: string;
-  is_verified: boolean;
-}
+import { type User } from "@/lib/types";
 
 interface AuthState {
   isAuthenticated: boolean;

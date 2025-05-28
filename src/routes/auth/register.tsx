@@ -1,27 +1,9 @@
-import { createRoute, Link } from "@tanstack/react-router";
+import { createRoute, Link, useNavigate, Outlet } from "@tanstack/react-router";
 import type { AnyRoute } from "@tanstack/react-router";
-import { useAppForm } from "../../hooks/use-app-form";
+import { useAppForm } from "@/hooks/use-app-form";
 import { z } from "zod";
-import { useRegister } from "../../hooks/use-auth";
-import { useSteps } from "@/hooks/use-steps";
+import { useRegister } from "@/hooks/use-auth";
 import EmailLinks from "@/components/auth/EmailLinks";
-
-const RegisterPage = () => {
-  const { step, nextStep } = useSteps(2);
-
-  return (
-    <>
-      {step === 1 ? (
-        <RegisterForm nextStep={nextStep} />
-      ) : (
-        <EmailLinks
-          label="We've sent you a verification link — please click it to activate
-            your account."
-        />
-      )}
-    </>
-  );
-};
 
 const registerSchema = z
   .object({
@@ -45,7 +27,8 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-const RegisterForm = ({ nextStep }: { nextStep: () => void }) => {
+const RegisterFormPage = () => {
+  const navigate = useNavigate();
   const registerMutation = useRegister();
 
   const form = useAppForm({
@@ -78,7 +61,7 @@ const RegisterForm = ({ nextStep }: { nextStep: () => void }) => {
           },
           {
             onSuccess: () => {
-              nextStep();
+              navigate({ to: "/auth/register/check-email" });
             },
           }
         );
@@ -94,7 +77,7 @@ const RegisterForm = ({ nextStep }: { nextStep: () => void }) => {
     : null;
 
   return (
-    <div className="flex items-center w-100 justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen w-100">
       <div className="w-full max-w-2xl py-12 px-10 rounded-3xl backdrop-blur-md bg-black border-[1px] border-stone-400">
         <div className="flex flex-col items-start justify-center text-white">
           <h1 className="text-2xl font-bold">Register</h1>
@@ -106,7 +89,7 @@ const RegisterForm = ({ nextStep }: { nextStep: () => void }) => {
             e.preventDefault();
             form.handleSubmit();
           }}
-          className="space-y-6 mt-8"
+          className="mt-8 space-y-6"
         >
           <form.AppField name="username">
             {(field) => <field.TextField label="" placeholder="Username" />}
@@ -135,22 +118,22 @@ const RegisterForm = ({ nextStep }: { nextStep: () => void }) => {
                   registerMutation.isPending ? "Registering..." : "Register"
                 }
                 disabled={registerMutation.isPending}
-                className="
-                  cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
-                  bg-gradient-to-br from-slate-900 to-red-900
-                  bg-[length:200%_200%] bg-[position:0%_0%]
-                  hover:bg-[position:100%_100%]
-                  transition-all duration-500 ease-in-out
-                  font-bold
-                "
+                className={
+                  "cursor-pointer w-full mt-2 py-6 text-lg rounded-xl " +
+                  "bg-gradient-to-br from-slate-900 to-red-900 " +
+                  "bg-[length:200%_200%] bg-[position:0%_0%] " +
+                  "hover:bg-[position:100%_100%] " +
+                  "transition-all duration-500 ease-in-out " +
+                  "font-bold"
+                }
               />
             </form.AppForm>
 
-            <div className="mt-12 w-full flex justify-center">
+            <div className="flex justify-center w-full mt-12">
               <p>Already have an account?</p>
               <Link
                 to="/auth/login"
-                className="text-slate-500 font-bold ml-2 hover:underline hover:text-slate-400 transition-all duration-500 ease-in-out"
+                className="ml-2 font-bold transition-all duration-500 ease-in-out text-slate-500 hover:underline hover:text-slate-400"
               >
                 Login!
               </Link>
@@ -162,12 +145,32 @@ const RegisterForm = ({ nextStep }: { nextStep: () => void }) => {
   );
 };
 
+const CheckEmailPage = () => (
+  <EmailLinks label="We've sent you a verification link — please click it to activate your account." />
+);
+
+const RegisterLayout = () =>  <Outlet />;
+
 export default function RegisterRoute<TParent extends AnyRoute>(
   parentRoute: TParent
 ) {
-  return createRoute({
+  const registerRoute = createRoute({
     getParentRoute: () => parentRoute,
     path: "/auth/register",
-    component: RegisterPage,
+    component: RegisterLayout,
   });
+
+  const registerFormRoute = createRoute({
+    getParentRoute: () => registerRoute,
+    path: "/",
+    component: RegisterFormPage,
+  });
+
+  const checkEmailRoute = createRoute({
+    getParentRoute: () => registerRoute,
+    path: "check-email",
+    component: CheckEmailPage,
+  });
+
+  return registerRoute.addChildren([registerFormRoute, checkEmailRoute]);
 }
