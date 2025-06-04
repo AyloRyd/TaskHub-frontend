@@ -102,7 +102,7 @@ const LoginPage = () => {
                 label={loginMutation.isPending ? "Logging in..." : "Login"}
                 disabled={loginMutation.isPending}
                 className="
-                  cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
+                  cursor-pointer w-full mt-2 py-6 text-lg text-white rounded-xl
                   bg-gradient-to-br from-slate-900 to-red-900
                   bg-[length:200%_200%] bg-[position:0%_0%]
                   hover:bg-[position:100%_100%]

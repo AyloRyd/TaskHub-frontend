@@ -5,6 +5,7 @@ import {
   useNavigate,
 } from "@tanstack/react-router";
 import { z } from "zod";
+import { useEffect, useRef } from "react";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useForgotPassword } from "@/hooks/use-auth";
 import { useAuthStore } from "@/store/auth";
@@ -22,11 +23,18 @@ const EnterEmailPage = () => {
   const forgotPasswordMutation = useForgotPassword();
   const { isAuthenticated, user } = useAuthStore();
 
-  if (isAuthenticated && user?.email) {
-    void forgotPasswordMutation.mutateAsync({ email: user.email }).then(() => {
-      navigate({ to: "/auth/forgot-password/check-email" });
-    });
-  }
+  const didSendForAuthenticatedUser = useRef(false);
+
+  useEffect(() => {
+    if (!didSendForAuthenticatedUser.current && isAuthenticated && user?.email) {
+      didSendForAuthenticatedUser.current = true; 
+      forgotPasswordMutation
+        .mutateAsync({ email: user.email })
+        .then(() => {
+          navigate({ to: "/auth/forgot-password/check-email" });
+        })
+    }
+  }, [isAuthenticated, user, forgotPasswordMutation, navigate]);
 
   const form = useAppForm({
     defaultValues: { email: "" },
@@ -94,12 +102,10 @@ const EnterEmailPage = () => {
                 label={forgotPasswordMutation.isPending ? "Sending..." : "Send"}
                 disabled={forgotPasswordMutation.isPending}
                 className={
-                  "cursor-pointer w-full mt-2 py-6 text-lg rounded-xl " +
-                  "bg-gradient-to-br from-slate-900 to-red-900 " +
-                  "bg-[length:200%_200%] bg-[position:0%_0%] " +
-                  "hover:bg-[position:100%_100%] " +
-                  "transition-all duration-500 ease-in-out " +
-                  "font-bold"
+                  `cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
+                 text-white bg-gradient-to-br from-slate-900 to-red-900 
+                 bg-[length:200%_200%] bg-[position:0%_0%] hover:bg-[position:100%_100%] 
+                 transition-all duration-500 ease-in-out font-bold`
                 }
               />
             </form.AppForm>

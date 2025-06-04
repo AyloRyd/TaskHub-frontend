@@ -12,7 +12,7 @@ const AppSidebarTrigger = ({ className, ...props }: AppSidebarTriggerProps) => {
     <button
       onClick={toggleSidebar}
       className={cn(
-        "cursor-pointer p-3 rounded-xl bg-taskhub-middle hover:bg-taskhub-dark text-stone-200 transition-colors duration-200",
+        "cursor-pointer p-3 rounded-xl bg-taskhub-middle hover:bg-taskhub-dark text-font-primarly transition-colors duration-200",
         className
       )}
       {...props}

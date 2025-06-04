@@ -17,4 +17,9 @@ _axios.interceptors.response.use(
   }
 );
 
+export interface ApiError {
+  error: string;
+  description: string;
+}
+
 export default _axios;

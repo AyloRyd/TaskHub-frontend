@@ -28,7 +28,7 @@ const AppSidebarPagesLinksList = () => {
                 if (isMobile) toggleSidebar();
               }}
               className={cn(
-                "flex items-center gap-4 px-4 py-6 h-15 text-stone-200 hover:bg-taskhub-dark transition-colors duration-200 rounded-xl",
+                "flex items-center gap-4 px-4 py-6 h-15 text-font-primarly hover:bg-taskhub-dark transition-colors duration-200 rounded-xl",
                 isActive ? "bg-taskhub-dark" : "bg-taskhub-middle"
               )}
             >

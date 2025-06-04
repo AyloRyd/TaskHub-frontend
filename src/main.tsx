@@ -32,11 +32,14 @@ import reportWebVitals from "./reportWebVitals.ts";
 
 import App from "./App.tsx";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import Header from "./components/Header/Header.tsx";
 
 const rootRoute = createRootRoute({
   component: () => (
     <>
-      <Outlet />
+      <SidebarProvider>
+        <Outlet />
+      </SidebarProvider>
       {/* <TanStackRouterDevtools />
           <TanStackQueryLayout /> */}
     </>
@@ -46,11 +49,14 @@ const rootRoute = createRootRoute({
 const appLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: () => (
-    <div className="relative">
-      <SidebarProvider>
-        <AppSidebar />
-        <Outlet />
-      </SidebarProvider>
+    <div className="flex w-full">
+      <AppSidebar />
+      <div className="flex flex-col w-full h-screen">
+        <Header />
+        <main className="h-full">
+          <Outlet />
+        </main>
+      </div>
     </div>
   ),
   id: "app-layout",
@@ -60,7 +66,7 @@ const authLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: () => (
     <div
-      className="relative flex items-center justify-center h-screen p-4 text-white"
+      className="relative flex items-center justify-center h-screen w-screen p-4 text-white"
       style={{
         backgroundImage: 'url("/auth-bg.png")',
         backgroundSize: "cover",
@@ -68,7 +74,7 @@ const authLayoutRoute = createRoute({
       }}
     >
       <Link
-        className="absolute p-3 top-4 left-4 bg-taskhub-light hover:bg-taskhub-middle rounded-xl"
+        className="absolute p-3 top-4 left-4 bg-black border-[1px] border-stone-400 hover:bg-stone-950 rounded-xl"
         to="/"
       >
         <ChevronLeft size={25} />

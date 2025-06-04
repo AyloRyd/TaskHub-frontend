@@ -119,7 +119,7 @@ const RegisterFormPage = () => {
                 }
                 disabled={registerMutation.isPending}
                 className={
-                  "cursor-pointer w-full mt-2 py-6 text-lg rounded-xl " +
+                  "cursor-pointer w-full mt-2 py-6 text-lg text-white rounded-xl " +
                   "bg-gradient-to-br from-slate-900 to-red-900 " +
                   "bg-[length:200%_200%] bg-[position:0%_0%] " +
                   "hover:bg-[position:100%_100%] " +
@@ -132,7 +132,7 @@ const RegisterFormPage = () => {
             <div className="flex justify-center w-full mt-12">
               <p>Already have an account?</p>
               <Link
-                to="/auth/login"
+                to="/"
                 className="ml-2 font-bold transition-all duration-500 ease-in-out text-slate-500 hover:underline hover:text-slate-400"
               >
                 Login!

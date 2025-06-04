@@ -14,13 +14,9 @@ import {
   type CurrentUserResponse,
   type LogoutResponse,
 } from "@/lib/types";
+import { type ApiError } from "@/lib/axios";
 
-export interface ApiError {
-  error: string;
-  description: string;
-}
-
-export class api {
+export class auth {
   private static client = _axios;
 
   static async register(payload: RegisterRequest): Promise<RegisterResponse> {

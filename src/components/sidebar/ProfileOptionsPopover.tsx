@@ -19,12 +19,12 @@ const ProfileOptionsPopover = () => {
   return (
     <Popover>
       <PopoverTrigger
-        className="w-full flex items-center gap-4 justify-between h-[5rem] px-6 cursor-pointer rounded-xl text-sm text-stone-200 
+        className="w-full flex items-center gap-4 justify-between h-[5rem] px-6 cursor-pointer rounded-xl text-sm text-font-primarly 
                    bg-taskhub-dark hover:bg-taskhub-darker transition-colors duration-200"
       >
         <div className="flex flex-col items-start justify-center">
           <p className="font-bold">{user?.name}</p>
-          <p className="text-stone-500">{user?.email}</p>
+          <p className="text-font-secondary">{user?.email}</p>
         </div>
         <ChevronDown size={20} />
       </PopoverTrigger>
@@ -39,7 +39,7 @@ const ProfileOptionsPopover = () => {
           onClick={() => {
             if (isMobile) toggleSidebar();
           }}
-          className="px-4 py-2 py-4 transition-colors duration-200 text-stone-200 bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
+          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
         >
           Profile
         </Link>
@@ -48,7 +48,7 @@ const ProfileOptionsPopover = () => {
           onClick={() => {
             if (isMobile) toggleSidebar();
           }}
-          className="px-4 py-2 py-4 transition-colors duration-200 text-stone-200 bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
+          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
         >
           Reset password
         </Link>
@@ -58,7 +58,7 @@ const ProfileOptionsPopover = () => {
             logout();
             if (isMobile) toggleSidebar();
           }}
-          className="px-4 py-2 py-4 transition-colors duration-200 text-stone-200 bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
+          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
         >
           Logout
         </Link>
@@ -68,7 +68,7 @@ const ProfileOptionsPopover = () => {
             deleteAccount();
             if (isMobile) toggleSidebar();
           }}
-          className="px-4 py-2 py-4 transition-colors duration-200 text-stone-200 bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
+          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
         >
           Delete account
         </Link>

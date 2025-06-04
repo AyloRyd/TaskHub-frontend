@@ -2,7 +2,7 @@
 
 @plugin "tailwindcss-animate";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 body {
   @apply m-0;
@@ -52,6 +52,14 @@ code {
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.871 0.006 286.286);
+
+  --color-taskhub-light: var(--color-stone-100);
+  --color-taskhub-middle: var(--color-stone-200);
+  --color-taskhub-dark: var(--color-stone-300);
+  --color-taskhub-darker: var(--color-stone-400);
+
+  --color-font-primarly: var(--color-stone-800);
+  --color-font-secondary: var(--color-stone-600);
 }
 
 .dark {
@@ -87,6 +95,14 @@ code {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.274 0.006 286.033);
   --sidebar-ring: oklch(0.442 0.017 285.786);
+
+  --color-taskhub-light: rgba(38, 36, 45, 1);
+  --color-taskhub-middle: rgba(30, 29, 34, 1);
+  --color-taskhub-dark: rgba(20, 19, 22, 1);
+  --color-taskhub-darker: rgba(11, 11, 12, 1);
+
+  --color-font-primarly: var(--color-stone-200);
+  --color-font-secondary: var(--color-stone-500);
 }
 
 @theme inline {
@@ -127,10 +143,13 @@ code {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --color-taskhub-light: rgba(38, 36, 45, 1);
-  --color-taskhub-middle: rgba(30, 29, 34, 1);
-  --color-taskhub-dark: rgba(20, 19, 22, 1);
-  --color-taskhub-darker: rgba(11, 11, 12, 1);
+  --color-taskhub-light: var(--color-taskhub-light);
+  --color-taskhub-middle: var(--color-taskhub-middle);
+  --color-taskhub-dark: var(--color-taskhub-dark);
+  --color-taskhub-darker: var(--color-taskhub-darker);
+
+  --color-font-primarly: var(--color-font-primarly);
+  --color-font-secondary: var(--color-font-secondary);
 }
 
 @layer base {

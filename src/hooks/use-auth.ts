@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { api, type ApiError } from "@/lib/api";
+import { auth } from "@/lib/auth";
+import { type ApiError } from "@/lib/axios";
 import {
   type User,
   type RegisterRequest,
@@ -25,7 +26,7 @@ export const useRegister = () => {
     AxiosError<ApiError>,
     RegisterRequest
   >({
-    mutationFn: (userData) => api.register(userData),
+    mutationFn: (userData) => auth.register(userData),
   });
 };
 
@@ -37,7 +38,7 @@ export const useLogin = () => {
     AxiosError<ApiError>,
     LoginRequest
   >({
-    mutationFn: (credentials) => api.login(credentials),
+    mutationFn: (credentials) => auth.login(credentials),
     onSuccess: (data, variables) => {
       setAuthenticated(true);
       setUser({
@@ -57,7 +58,7 @@ export const useForgotPassword = () => {
     AxiosError<ApiError>,
     ForgotPasswordRequest
   >({
-    mutationFn: (payload) => api.forgotPassword(payload),
+    mutationFn: (payload) => auth.forgotPassword(payload),
   });
 };
 
@@ -67,7 +68,7 @@ export const useResetPassword = () => {
     AxiosError<ApiError>,
     ResetPasswordRequest
   >({
-    mutationFn: (payload) => api.resetPassword(payload),
+    mutationFn: (payload) => auth.resetPassword(payload),
   });
 };
 
@@ -80,7 +81,7 @@ export const useDelete = () => {
     AxiosError<ApiError>,
     DeleteUserRequest
   >({
-    mutationFn: () => api.delete(),
+    mutationFn: () => auth.delete(),
     onSuccess: () => {
       logout();
       queryClient.removeQueries({ queryKey: ["currentUser"] });
@@ -96,7 +97,7 @@ export const useCurrent = () => {
     AxiosError<ApiError>
   >({
     queryKey: ["currentUser"],
-    queryFn: () => api.current(),
+    queryFn: () => auth.current(),
     enabled: isAuthenticated !== false,
   });
 };
@@ -111,7 +112,7 @@ export const useLogout = () => {
     LogoutRequest
   >({
     mutationFn: async () => {
-      await api.logout();
+      await auth.logout();
       logout();
     },
     onSuccess: () => {
