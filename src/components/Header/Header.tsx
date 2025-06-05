@@ -1,10 +1,12 @@
 import { useSidebar } from "../ui/sidebar";
 import AppSidebarTrigger from "../sidebar/AppSidebarTrigger";
 import ThemeToggle from "./ThemeToggle";
-import { Button } from "../ui/button";
+import { useAuthStore } from "@/store/auth";
+import CreateTask from "./CreateTask";
 
 const Header = () => {
   const { isMobile, open } = useSidebar();
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <header className="flex items-center justify-between bg-taskhub-light p-4">
@@ -13,10 +15,7 @@ const Header = () => {
 
         <ThemeToggle />
       </div>
-
-      <Button className="bg-taskhub-middle hover:bg-taskhub-dark text-font-primarly cursor-pointer py-6 shadow-none rounded-xl">
-        Add new task
-      </Button>
+      {isAuthenticated && <CreateTask />}
     </header>
   );
 };

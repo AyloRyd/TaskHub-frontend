@@ -2,7 +2,7 @@ import { createRoute, Link, useNavigate, Outlet } from "@tanstack/react-router";
 import type { AnyRoute } from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/use-app-form";
 import { z } from "zod";
-import { useRegister } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 import EmailLinks from "@/components/auth/EmailLinks";
 
 const registerSchema = z
@@ -29,7 +29,7 @@ const registerSchema = z
 
 const RegisterFormPage = () => {
   const navigate = useNavigate();
-  const registerMutation = useRegister();
+  const { register } = useAuth();
 
   const form = useAppForm({
     defaultValues: {
@@ -53,7 +53,7 @@ const RegisterFormPage = () => {
         return errors;
       },
       onSubmit: async ({ value }) => {
-        registerMutation.mutate(
+        register.mutate(
           {
             name: value.username,
             email: value.email,
@@ -69,10 +69,9 @@ const RegisterFormPage = () => {
     },
   });
 
-  const errorMessage = registerMutation.error
-    ? `${registerMutation.error.response?.status ?? ""} ${
-        registerMutation.error.response?.data.description ||
-        "Registration failed"
+  const errorMessage = register.error
+    ? `${register.error.response?.status ?? ""} ${
+        register.error.response?.data.description || "Registration failed"
       }`
     : null;
 
@@ -114,10 +113,8 @@ const RegisterFormPage = () => {
           <div className="mt-8">
             <form.AppForm>
               <form.SubscribeButton
-                label={
-                  registerMutation.isPending ? "Registering..." : "Register"
-                }
-                disabled={registerMutation.isPending}
+                label={register.isPending ? "Registering..." : "Register"}
+                disabled={register.isPending}
                 className={
                   "cursor-pointer w-full mt-2 py-6 text-lg text-white rounded-xl " +
                   "bg-gradient-to-br from-slate-900 to-red-900 " +
@@ -149,7 +146,7 @@ const CheckEmailPage = () => (
   <EmailLinks label="We've sent you a verification link — please click it to activate your account." />
 );
 
-const RegisterLayout = () =>  <Outlet />;
+const RegisterLayout = () => <Outlet />;
 
 export default function RegisterRoute<TParent extends AnyRoute>(
   parentRoute: TParent

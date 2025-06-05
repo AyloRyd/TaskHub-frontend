@@ -7,7 +7,7 @@ import {
 import { z } from "zod";
 import { useEffect, useRef } from "react";
 import { useAppForm } from "@/hooks/use-app-form";
-import { useForgotPassword } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 import { useAuthStore } from "@/store/auth";
 import EmailLinks from "@/components/auth/EmailLinks";
 
@@ -20,21 +20,23 @@ const forgotPasswordSchema = z.object({
 
 const EnterEmailPage = () => {
   const navigate = useNavigate();
-  const forgotPasswordMutation = useForgotPassword();
+  const { forgotPassword } = useAuth();
   const { isAuthenticated, user } = useAuthStore();
 
   const didSendForAuthenticatedUser = useRef(false);
 
   useEffect(() => {
-    if (!didSendForAuthenticatedUser.current && isAuthenticated && user?.email) {
-      didSendForAuthenticatedUser.current = true; 
-      forgotPasswordMutation
-        .mutateAsync({ email: user.email })
-        .then(() => {
-          navigate({ to: "/auth/forgot-password/check-email" });
-        })
+    if (
+      !didSendForAuthenticatedUser.current &&
+      isAuthenticated &&
+      user?.email
+    ) {
+      didSendForAuthenticatedUser.current = true;
+      forgotPassword.mutateAsync({ email: user.email }).then(() => {
+        navigate({ to: "/auth/forgot-password/check-email" });
+      });
     }
-  }, [isAuthenticated, user, forgotPasswordMutation, navigate]);
+  }, [isAuthenticated, user, forgotPassword, navigate]);
 
   const form = useAppForm({
     defaultValues: { email: "" },
@@ -53,7 +55,7 @@ const EnterEmailPage = () => {
         return errors;
       },
       onSubmit: async ({ value }) => {
-        forgotPasswordMutation.mutate(
+        forgotPassword.mutate(
           { email: value.email },
           {
             onSuccess: () => {
@@ -65,10 +67,9 @@ const EnterEmailPage = () => {
     },
   });
 
-  const errorMessage = forgotPasswordMutation.error
-    ? `${forgotPasswordMutation.error.response?.status ?? ""} ${
-        forgotPasswordMutation.error.response?.data.description ||
-        "Sending link failed"
+  const errorMessage = forgotPassword.error
+    ? `${forgotPassword.error.response?.status ?? ""} ${
+        forgotPassword.error.response?.data.description || "Sending link failed"
       }`
     : null;
 
@@ -99,14 +100,12 @@ const EnterEmailPage = () => {
           <div className="mt-8">
             <form.AppForm>
               <form.SubscribeButton
-                label={forgotPasswordMutation.isPending ? "Sending..." : "Send"}
-                disabled={forgotPasswordMutation.isPending}
-                className={
-                  `cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
+                label={forgotPassword.isPending ? "Sending..." : "Send"}
+                disabled={forgotPassword.isPending}
+                className={`cursor-pointer w-full mt-2 py-6 text-lg rounded-xl
                  text-white bg-gradient-to-br from-slate-900 to-red-900 
                  bg-[length:200%_200%] bg-[position:0%_0%] hover:bg-[position:100%_100%] 
-                 transition-all duration-500 ease-in-out font-bold`
-                }
+                 transition-all duration-500 ease-in-out font-bold`}
               />
             </form.AppForm>
           </div>

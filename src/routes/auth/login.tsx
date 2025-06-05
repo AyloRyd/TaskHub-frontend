@@ -2,7 +2,7 @@ import { createRoute, Link, useNavigate } from "@tanstack/react-router";
 import type { AnyRoute } from "@tanstack/react-router";
 import { useAppForm } from "../../hooks/use-app-form";
 import { z } from "zod";
-import { useLogin } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 
 const loginSchema = z.object({
   email: z
@@ -21,7 +21,10 @@ const loginSchema = z.object({
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const loginMutation = useLogin();
+  const {
+    login,
+    oauth2: { mutate: oauth2 },
+  } = useAuth();
 
   const form = useAppForm({
     defaultValues: {
@@ -43,7 +46,7 @@ const LoginPage = () => {
         return errors;
       },
       onSubmit: async ({ value }) => {
-        loginMutation.mutate(
+        login.mutate(
           { email: value.email, password: value.password },
           {
             onSuccess: () => {
@@ -55,9 +58,9 @@ const LoginPage = () => {
     },
   });
 
-  const errorMessage = loginMutation.error
-    ? `${loginMutation.error.response?.status ?? ""} ${
-        loginMutation.error.response?.data.description || "Login failed"
+  const errorMessage = login.error
+    ? `${login.error.response?.status ?? ""} ${
+        login.error.response?.data.description || "Login failed"
       }`
     : null;
 
@@ -99,8 +102,8 @@ const LoginPage = () => {
           <div className="mt-8">
             <form.AppForm>
               <form.SubscribeButton
-                label={loginMutation.isPending ? "Logging in..." : "Login"}
-                disabled={loginMutation.isPending}
+                label={login.isPending ? "Logging in..." : "Login"}
+                disabled={login.isPending}
                 className="
                   cursor-pointer w-full mt-2 py-6 text-lg text-white rounded-xl
                   bg-gradient-to-br from-slate-900 to-red-900
@@ -120,6 +123,16 @@ const LoginPage = () => {
               >
                 Register!
               </Link>
+            </div>
+
+            <div className="mt-4 w-full flex justify-center text-white">
+              <button
+                type="button"
+                className="cursor-pointer text-slate-500 font-bold ml-2 hover:underline hover:text-slate-400 transition-all duration-500 ease-in-out"
+                onClick={() => oauth2()}
+              >
+                Login with Google
+              </button>
             </div>
           </div>
         </form>

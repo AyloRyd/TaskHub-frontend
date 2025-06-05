@@ -9,7 +9,7 @@ const sidebarItems = [
   { to: "/demo/form/simple", icon: Search, label: "Simple Form" },
   { to: "/demo/form/address", icon: FileText, label: "Address Form" },
   { to: "/demo/table", icon: Folder, label: "TanStack Table" },
-  { to: "/demo/tanstack-query", icon: Settings, label: "TanStack Query" },
+  { to: "/demo/profile", icon: Settings, label: "Profile" },
 ];
 
 const AppSidebarPagesLinksList = () => {

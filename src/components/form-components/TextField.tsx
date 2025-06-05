@@ -3,6 +3,7 @@ import { useStore } from "@tanstack/react-form";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { ErrorMessages } from "./ErrorMessages";
+import { cn } from "@/lib/utils";
 
 export function TextField({
   label,
@@ -18,7 +19,7 @@ export function TextField({
 
   return (
     <div className={className}>
-      <Label htmlFor={label} className="mb-2 text-xl font-bold">
+      <Label htmlFor={label} className={cn(label !== "" && "mb-2", "text-xl font-bold")}>
         {label}
       </Label>
       <Input

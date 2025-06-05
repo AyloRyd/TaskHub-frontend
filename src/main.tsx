@@ -12,7 +12,7 @@ import {
 import FormSimpleDemo from "./routes/demo.form.simple.tsx";
 import FormAddressDemo from "./routes/demo.form.address.tsx";
 import TableDemo from "./routes/demo.table.tsx";
-import TanStackQueryDemo from "./routes/demo.tanstack-query.tsx";
+import ProfileRoute from "./routes/profile.tsx";
 
 import LoginRoute from "./routes/auth/login.tsx";
 import RegisterRoute from "./routes/auth/register.tsx";
@@ -97,7 +97,7 @@ const routeTree = rootRoute.addChildren([
     FormSimpleDemo(appLayoutRoute),
     FormAddressDemo(appLayoutRoute),
     TableDemo(appLayoutRoute),
-    TanStackQueryDemo(appLayoutRoute),
+    ProfileRoute(appLayoutRoute),
   ]),
   authLayoutRoute.addChildren([
     LoginRoute(authLayoutRoute),

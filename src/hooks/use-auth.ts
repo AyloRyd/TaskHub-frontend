@@ -17,23 +17,23 @@ import {
   type CurrentUserResponse,
   type LogoutRequest,
   type LogoutResponse,
-} from "@/lib/types";
+} from "@/lib/types/auth";
 import { useAuthStore } from "../store/auth";
 
-export const useRegister = () => {
-  return useMutation<
+export const useAuth = () => {
+  const { setAuthenticated, setUser, logout: storeLogout, isAuthenticated } =
+    useAuthStore();
+  const queryClient = useQueryClient();
+
+  const register = useMutation<
     RegisterResponse,
     AxiosError<ApiError>,
     RegisterRequest
   >({
-    mutationFn: (userData) => auth.register(userData),
+    mutationFn: (payload) => auth.register(payload),
   });
-};
 
-export const useLogin = () => {
-  const { setAuthenticated, setUser } = useAuthStore();
-
-  return useMutation<
+  const login = useMutation<
     LoginResponse,
     AxiosError<ApiError>,
     LoginRequest
@@ -50,73 +50,65 @@ export const useLogin = () => {
       } as User);
     },
   });
-};
 
-export const useForgotPassword = () => {
-  return useMutation<
+  const forgotPassword = useMutation<
     ForgotPasswordResponse,
     AxiosError<ApiError>,
     ForgotPasswordRequest
   >({
     mutationFn: (payload) => auth.forgotPassword(payload),
   });
-};
 
-export const useResetPassword = () => {
-  return useMutation<
+  const resetPassword = useMutation<
     ResetPasswordResponse,
     AxiosError<ApiError>,
     ResetPasswordRequest
   >({
     mutationFn: (payload) => auth.resetPassword(payload),
   });
-};
 
-export const useDelete = () => {
-  const { logout } = useAuthStore();
-  const queryClient = useQueryClient();
-
-  return useMutation<
+  const deleteAccount = useMutation<
     DeleteUserResponse,
     AxiosError<ApiError>,
     DeleteUserRequest
   >({
     mutationFn: () => auth.delete(),
     onSuccess: () => {
-      logout();
+      storeLogout();
       queryClient.removeQueries({ queryKey: ["currentUser"] });
     },
   });
-};
 
-export const useCurrent = () => {
-  const { isAuthenticated } = useAuthStore();
-
-  return useQuery<
-    CurrentUserResponse,
-    AxiosError<ApiError>
-  >({
+  const currentUser = useQuery<CurrentUserResponse, AxiosError<ApiError>>({
     queryKey: ["currentUser"],
     queryFn: () => auth.current(),
     enabled: isAuthenticated !== false,
   });
-};
 
-export const useLogout = () => {
-  const { logout } = useAuthStore();
-  const queryClient = useQueryClient();
-
-  return useMutation<
-    LogoutResponse,
-    AxiosError<ApiError>,
-    LogoutRequest
-  >({
+  const logout = useMutation<LogoutResponse, AxiosError<ApiError>, LogoutRequest>({
     mutationFn: async () => {
       await auth.logout();
-      logout();
+      storeLogout();
     },
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["currentUser"] });
     },
   });
+
+  const oauth2 = useMutation<void, AxiosError<ApiError>, void>({
+    mutationFn: async () => {
+      await auth.oauth2();
+    },
+  });
+
+  return {
+    register,
+    login,
+    forgotPassword,
+    resetPassword,
+    deleteAccount,
+    currentUser,
+    logout,
+    oauth2
+  };
 };

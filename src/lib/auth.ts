@@ -9,11 +9,10 @@ import {
   type ForgotPasswordResponse,
   type ResetPasswordRequest,
   type ResetPasswordResponse,
-  type DeleteUserRequest,
   type DeleteUserResponse,
   type CurrentUserResponse,
   type LogoutResponse,
-} from "@/lib/types";
+} from "@/lib/types/auth";
 import { type ApiError } from "@/lib/axios";
 
 export class auth {
@@ -71,7 +70,7 @@ export class auth {
     }
   }
 
-  static async delete(): Promise<DeleteUserRequest> {
+  static async delete(): Promise<DeleteUserResponse> {
     try {
       const { data } = await this.client.post<DeleteUserResponse>(
         "/auth/delete"
@@ -96,6 +95,15 @@ export class auth {
   static async logout(): Promise<LogoutResponse> {
     try {
       const { data } = await this.client.post<LogoutResponse>("/auth/logout");
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError>;
+    }
+  }
+
+  static async oauth2(): Promise<void> {
+    try {
+      const { data } = await this.client.get("/oauth2/google");
       return data;
     } catch (e) {
       throw e as AxiosError<ApiError>;

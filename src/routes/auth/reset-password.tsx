@@ -1,6 +1,13 @@
-import { createRoute, type AnyRoute, Outlet, useNavigate, useSearch, Link } from "@tanstack/react-router";
+import {
+  createRoute,
+  type AnyRoute,
+  Outlet,
+  useNavigate,
+  useSearch,
+  Link,
+} from "@tanstack/react-router";
 import { z } from "zod";
-import { useResetPassword } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useAuthStore } from "@/store/auth";
 import { Button } from "@/components/ui/button";
@@ -25,7 +32,7 @@ const registerSchema = z
 const ResetPasswordForm = () => {
   const navigate = useNavigate();
   const { token } = useSearch({ from: "/auth-layout/auth/reset-password" });
-  const resetPasswordMutation = useResetPassword();
+  const { resetPassword } = useAuth();
 
   const form = useAppForm({
     defaultValues: { newPassword: "", confirmNewPassword: "" },
@@ -44,17 +51,23 @@ const ResetPasswordForm = () => {
         return errors;
       },
       onSubmit: async ({ value }) => {
-        resetPasswordMutation.mutate(
+        resetPassword.mutate(
           { password: value.newPassword, token },
-          { onSuccess: () => navigate({ to: "/auth/reset-password/success", search: { token } }) }
+          {
+            onSuccess: () =>
+              navigate({
+                to: "/auth/reset-password/success",
+                search: { token },
+              }),
+          }
         );
       },
     },
   });
 
-  const errorMessage = resetPasswordMutation.error
-    ? `${resetPasswordMutation.error.response?.status ?? ""} ${
-        resetPasswordMutation.error.response?.data.description ||
+  const errorMessage = resetPassword.error
+    ? `${resetPassword.error.response?.status ?? ""} ${
+        resetPassword.error.response?.data.description ||
         "Password resetting failed"
       }`
     : null;
@@ -82,7 +95,10 @@ const ResetPasswordForm = () => {
 
           <form.AppField name="confirmNewPassword">
             {(field) => (
-              <field.PasswordField label="" placeholder="Confirm new password" />
+              <field.PasswordField
+                label=""
+                placeholder="Confirm new password"
+              />
             )}
           </form.AppField>
 
@@ -91,10 +107,8 @@ const ResetPasswordForm = () => {
           <div className="mt-8">
             <form.AppForm>
               <form.SubscribeButton
-                label={
-                  resetPasswordMutation.isPending ? "Resetting..." : "Reset"
-                }
-                disabled={resetPasswordMutation.isPending}
+                label={resetPassword.isPending ? "Resetting..." : "Reset"}
+                disabled={resetPassword.isPending}
                 className="cursor-pointer w-full mt-2 py-6 text-lg rounded-xl bg-gradient-to-br from-slate-900 to-red-900 bg-[length:200%_200%] bg-[position:0%_0%] hover:bg-[position:100%_100%] transition-all duration-500 ease-in-out font-bold"
               />
             </form.AppForm>
@@ -129,7 +143,7 @@ const SuccessPage = () => {
   );
 };
 
-const ResetPasswordLayout = () => <Outlet />
+const ResetPasswordLayout = () => <Outlet />;
 
 export default function ResetPasswordRoute<TParent extends AnyRoute>(
   parentRoute: TParent

@@ -8,13 +8,15 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth";
-import { useLogout, useDelete } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 
 const ProfileOptionsPopover = () => {
   const { isMobile, toggleSidebar } = useSidebar();
   const { user } = useAuthStore();
-  const { mutate: logout } = useLogout();
-  const { mutate: deleteAccount } = useDelete();
+  const { 
+    logout: { mutate: logout }, 
+    deleteAccount: { mutate: deleteAccount } 
+  } = useAuth();
 
   return (
     <Popover>

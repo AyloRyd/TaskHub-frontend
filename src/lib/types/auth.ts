@@ -1,5 +1,3 @@
-// General types
-
 export interface User {
   pid: string;
   name: string;
@@ -7,9 +5,6 @@ export interface User {
   is_verified: boolean;
   role: "User" | "Admin";
 }
-
-
-// Authentication types
 
 export type RegisterRequest = {
   name: string;
