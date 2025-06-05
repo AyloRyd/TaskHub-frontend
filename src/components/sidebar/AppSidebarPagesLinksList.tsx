@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Search, FileText, Folder, Settings, User } from "lucide-react";
+// import { Home, Search, FileText, Folder, Settings, User } from "lucide-react";
+import { Home, User } from "lucide-react";
 import { SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { useMatchRoute } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
