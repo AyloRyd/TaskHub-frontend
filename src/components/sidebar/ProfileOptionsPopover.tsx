@@ -32,25 +32,16 @@ const ProfileOptionsPopover = () => {
       </PopoverTrigger>
       <PopoverContent
         className={cn(
-          "border-none shadow-none rounded-xl p-3 flex flex-col gap-2 bg-taskhub-dark mb-3",
+          "border-none shadow-none rounded-xl p-0 flex flex-col gap-2 bg-taskhub-dark mb-3",
           isMobile ? "w-63" : "w-55"
         )}
       >
-        <Link
-          to="/"
-          onClick={() => {
-            if (isMobile) toggleSidebar();
-          }}
-          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
-        >
-          Profile
-        </Link>
         <Link
           to="/auth/forgot-password"
           onClick={() => {
             if (isMobile) toggleSidebar();
           }}
-          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
+          className="px-4 py-4 rounded-t-xl transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker"
         >
           Reset password
         </Link>
@@ -60,7 +51,7 @@ const ProfileOptionsPopover = () => {
             logout();
             if (isMobile) toggleSidebar();
           }}
-          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
+          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker"
         >
           Logout
         </Link>
@@ -70,7 +61,7 @@ const ProfileOptionsPopover = () => {
             deleteAccount();
             if (isMobile) toggleSidebar();
           }}
-          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-xl"
+          className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-b-xl"
         >
           Delete account
         </Link>

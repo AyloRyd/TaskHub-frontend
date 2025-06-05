@@ -21,8 +21,9 @@ import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useTasks } from "@/hooks/use-tasks";
 import { z } from "zod";
-import type { Visibility } from "@/lib/types/tasks";
+import type { Task, Visibility } from "@/lib/types/tasks";
 import { useState } from "react";
+import { Edit } from "lucide-react";
 
 const createTaskSchema = z.object({
   name: z
@@ -34,14 +35,14 @@ const createTaskSchema = z.object({
   }),
 });
 
-const CreateTask = () => {
-  const [open, setOpen] = useState(false); 
-  const { createTask } = useTasks();
+const UpdateTask = ({ task }: { task: Task }) => {
+  const [open, setOpen] = useState(false);
+  const { update } = useTasks();
 
   const form = useAppForm({
     defaultValues: {
-      name: "My task",
-      visibility: "Private" as Visibility,
+      name: task.name,
+      visibility: task.visibility as Visibility,
     },
     validators: {
       onBlur: ({ value }) => {
@@ -58,15 +59,16 @@ const CreateTask = () => {
         return errors;
       },
       onSubmit: async ({ value }) => {
-        createTask.mutate(
-          { 
-            name: value.name, 
-            visibility: value.visibility 
+        update.mutate(
+          {
+            id: task.id,
+            name: value.name,
+            visibility: value.visibility,
           },
           {
             onSuccess: () => {
               form.reset();
-              setOpen(false); 
+              setOpen(false);
             },
           }
         );
@@ -74,22 +76,24 @@ const CreateTask = () => {
     },
   });
 
-  const errorMessage = createTask.error
-    ? `${createTask.error.response?.status ?? ""} ${
-        createTask.error.response?.data.description || "Failed to create task"
+  const errorMessage = update.error
+    ? `${update.error.response?.status ?? ""} ${
+        update.error.response?.data.description || "Failed to create task"
       }`
     : null;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}> 
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-taskhub-middle hover:bg-taskhub-dark text-font-primarly cursor-pointer py-6 shadow-none rounded-xl">
-          Create new task
+        <Button
+          size="sm"
+          className="justify-start gap-2 h-12 text-lg cursor-pointer rounded-none rounded-t-lg bg-taskhub-middle hover:bg-taskhub-dark text-font-primarly"
+        >
+          <Edit size={14} />
+          Edit Task
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="sm:max-w-[425px] rounded-2xl"
-      >
+      <DialogContent className="sm:max-w-[425px] rounded-2xl">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -98,21 +102,18 @@ const CreateTask = () => {
           }}
         >
           <DialogHeader>
-            <DialogTitle>Create task</DialogTitle>
+            <DialogTitle>Edit task</DialogTitle>
             <DialogDescription>
-              Enter task name and select visibility
+              You can edit task name and visibility here.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="grid gap-4 py-4">
             <form.AppField name="name">
               {(field) => (
                 <div className="grid gap-3">
                   <Label htmlFor="task-name">Name</Label>
-                  <field.TextField 
-                    label=""
-                    placeholder="Enter task name"
-                  />
+                  <field.TextField label="" placeholder="Enter task name"/>
                 </div>
               )}
             </form.AppField>
@@ -121,9 +122,11 @@ const CreateTask = () => {
               {(field) => (
                 <div className="grid gap-3 mb-4">
                   <Label htmlFor="task-visibility">Visibility</Label>
-                  <Select 
-                    value={field.state.value ?? ""} 
-                    onValueChange={(val: string) => field.handleChange(val as Visibility)}
+                  <Select
+                    value={field.state.value ?? ""}
+                    onValueChange={(val: string) =>
+                      field.handleChange(val as Visibility)
+                    }
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select visibility" />
@@ -152,20 +155,20 @@ const CreateTask = () => {
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 className="cursor-pointer"
-                disabled={createTask.isPending}
+                disabled={update.isPending}
               >
                 Cancel
               </Button>
             </DialogClose>
-            
+
             <form.AppForm>
               <form.SubscribeButton
-                label={createTask.isPending ? "Creating..." : "Create Task"}
-                disabled={createTask.isPending}
+                label={update.isPending ? "Updating..." : "Update Task"}
+                disabled={update.isPending}
                 className="cursor-pointer"
               />
             </form.AppForm>
@@ -176,5 +179,4 @@ const CreateTask = () => {
   );
 };
 
-
-export default CreateTask;
+export default UpdateTask;

@@ -9,8 +9,8 @@ const Header = () => {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <header className="flex items-center justify-between bg-taskhub-light p-4">
-      <div className="flex items-center justify-between gap-4">
+    <header className="flex items-center justify-between bg-taskhub-light p-4 relative z-20">
+      <div className="flex h-full items-center justify-between gap-4">
         {(isMobile || !open) && <AppSidebarTrigger />}
 
         <ThemeToggle />

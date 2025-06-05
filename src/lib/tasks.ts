@@ -4,7 +4,11 @@ import { type ApiError } from "@/lib/axios";
 import {
   type CreateTaskRequest,
   type CreateTaskResponse,
+  type DeleteTaskRequest,
+  type DeleteTaskResponse,
   type GetUserTasksResponse,
+  type UpdateTaskRequest,
+  type UpdateTaskResponse,
 } from "@/lib/types/tasks";
 
 export class tasks {
@@ -33,12 +37,36 @@ export class tasks {
     }
   }
 
-    static async getMyTasks(): Promise<GetUserTasksResponse> {
+  static async getMyTasks(): Promise<GetUserTasksResponse> {
     try {
       const { data } = await this.client.get<GetUserTasksResponse>(
         `/user/tasks/me`
       );
       return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError>;
+    }
+  }
+
+  static async update(
+    payload: UpdateTaskRequest
+  ): Promise<UpdateTaskResponse> {
+    try {
+      const { data } = await this.client.put<UpdateTaskResponse>(
+        `/tasks/${payload.id}`,
+        { name: payload.name, visibility: payload.visibility }
+      );
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError>;
+    }
+  }
+
+  static async remove(
+    payload: DeleteTaskRequest
+  ): Promise<DeleteTaskResponse> {
+    try {
+      await this.client.delete(`/tasks/${payload.id}`);
     } catch (e) {
       throw e as AxiosError<ApiError>;
     }

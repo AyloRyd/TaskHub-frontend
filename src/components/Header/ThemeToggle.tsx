@@ -7,7 +7,7 @@ const ThemeToggle = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <div className="flex items-center space-x-3 cursor-pointer">
+    <div className="flex items-center space-x-3 cursor-pointer py-[6px]">
       <div className="relative flex items-center space-x-2 bg-taskhub-middle rounded-full p-1">
         <div className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 bg-taskhub-dark text-font-primarly">
           <Sun

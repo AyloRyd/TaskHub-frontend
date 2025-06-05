@@ -1,15 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Search, FileText, Folder, Settings } from "lucide-react";
+import { Home, Search, FileText, Folder, Settings, User } from "lucide-react";
 import { SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { useMatchRoute } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 const sidebarItems = [
   { to: "/", icon: Home, label: "Home" },
-  { to: "/demo/form/simple", icon: Search, label: "Simple Form" },
-  { to: "/demo/form/address", icon: FileText, label: "Address Form" },
-  { to: "/demo/table", icon: Folder, label: "TanStack Table" },
-  { to: "/demo/profile", icon: Settings, label: "Profile" },
+  // { to: "/demo/form/simple", icon: Search, label: "Simple Form" },
+  // { to: "/demo/form/address", icon: FileText, label: "Address Form" },
+  // { to: "/demo/table", icon: Folder, label: "TanStack Table" },
+  { to: "/profile", icon: User, label: "Profile" },
 ];
 
 const AppSidebarPagesLinksList = () => {
@@ -17,7 +17,7 @@ const AppSidebarPagesLinksList = () => {
   const { isMobile, toggleSidebar } = useSidebar();
 
   return (
-    <>
+    <div className="mt-6 flex flex-col gap-4">
       {sidebarItems.map(({ to, icon: Icon, label }) => {
         let isActive = matchRoute({ to: to, fuzzy: false });
         return (
@@ -38,7 +38,7 @@ const AppSidebarPagesLinksList = () => {
           </SidebarMenuItem>
         );
       })}
-    </>
+    </div>
   );
 };
 

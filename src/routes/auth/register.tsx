@@ -29,7 +29,10 @@ const registerSchema = z
 
 const RegisterFormPage = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const {
+    register,
+    oauth2: { mutate: oauth2 },
+  } = useAuth();
 
   const form = useAppForm({
     defaultValues: {
@@ -134,6 +137,16 @@ const RegisterFormPage = () => {
               >
                 Login!
               </Link>
+            </div>
+
+            <div className="mt-4 w-full flex justify-center text-white">
+              <button
+                type="button"
+                className="cursor-pointer text-slate-500 font-bold ml-2 hover:underline hover:text-slate-400 transition-all duration-500 ease-in-out"
+                onClick={() => oauth2()}
+              >
+                Login with Google
+              </button>
             </div>
           </div>
         </form>

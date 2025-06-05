@@ -1,6 +1,6 @@
 import { createRoute } from "@tanstack/react-router";
 import type { AnyRoute } from "@tanstack/react-router";
-import { LoaderCircle, User, Mail, Shield, CheckCircle, XCircle, MoreVertical, Edit, Trash2 } from "lucide-react";
+import { LoaderCircle, User, Mail, Shield, CheckCircle, XCircle, MoreVertical } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useAuthStore } from "@/store/auth";
 import { useTasks } from "@/hooks/use-tasks";
@@ -11,6 +11,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import UpdateTask from "@/components/Header/UpdateTask";
+import DeleteTask from "@/components/Header/DeleteTask";
 
 function TaskCard({ task }: { task: Task }) {
   const getVisibilityColor = (visibility: Task['visibility']) => {
@@ -27,59 +29,46 @@ function TaskCard({ task }: { task: Task }) {
   };
 
   return (
-    <div className="bg-taskhub-light border border-taskhub-middle rounded-lg p-4 cursor-pointer transition-colors duration-200">
-      <div className="flex items-center justify-between">
-        <div className="flex-1 mr-3">
-          <h3 className="text-lg font-semibold text-font-primarly truncate mb-2">
+    <div className="group relative bg-taskhub-dark border-2 border-taskhub-dark/20 rounded-2xl p-6 transition-all duration-300 cursor-pointer">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-font-primarly mb-3 leading-tight">
             {task.name}
           </h3>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getVisibilityColor(task.visibility)}`}>
-            {task.visibility}
-          </span>
         </div>
         
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button 
-              size="sm" 
-              className="h-8 w-8 p-0 cursor-pointer bg-taskhub-light hover:bg-taskhub-middle"
-            >
-              <MoreVertical size={16} className="text-font-secondary" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-0 rounded-xl" align="end">
-            <div className="grid">
+        <div className="transition-opacity duration-200">
+          <Popover>
+            <PopoverTrigger asChild>
               <Button
                 size="sm"
-                className="justify-start gap-2 h-12 text-lg cursor-pointer rounded-none rounded-t-lg bg-taskhub-middle hover:bg-taskhub-dark text-font-primarly"
-                onClick={() => {
-                  // TODO: Implement edit functionality
-                  console.log('Edit task:', task.id);
-                }}
+                className="h-8 w-8 p-0 cursor-pointer bg-taskhub-middle hover:bg-taskhub-light"
               >
-                <Edit size={14} />
-                Edit Task
+                <MoreVertical size={16} className="text-font-secondary" />
               </Button>
-              <Button
-                size="sm"
-                className="justify-start gap-2 h-12 text-lg text-red-600 hover:text-red-70
-                           cursor-pointer rounded-none rounded-b-lg bg-taskhub-middle hover:bg-taskhub-dark"
-                onClick={() => {
-                  // TODO: Implement delete functionality
-                  console.log('Delete task:', task.id);
-                }}
-              >
-                <Trash2 size={14} />
-                Delete Task
-              </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-0 rounded-xl border-taskhub-light border-[2px]" align="end">
+              <div className="grid">
+                <UpdateTask task={task} />
+                <DeleteTask task={task} />
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className={`inline-flex px-4 py-2 rounded-xl text-sm font-semibold ${getVisibilityColor(task.visibility)}`}>
+          {task.visibility}
+        </span>
+        
+        <span className="text-xs text-font-secondary/60 font-mono">
+          #{task.id}
+        </span>
       </div>
     </div>
   );
 }
-
 function Profile() {
   const { isAuthenticated, user: userData } = useAuthStore();
   const {
@@ -91,7 +80,7 @@ function Profile() {
     return (
       <div className="min-h-screen bg-taskhub-light flex items-center justify-center px-4">
         <div className="text-center">
-          <User size={80} className="mx-auto mb-4 text-font-secondary" />
+          <User size={80} className="mx-auto mb-4 text-font-primarly" />
           <p className="text-2xl font-bold text-font-primarly">
             Please log in to view your profile.
           </p>
@@ -129,7 +118,7 @@ function Profile() {
     return (
       <div className="min-h-screen bg-taskhub-light flex items-center justify-center px-4">
         <div className="text-center">
-          <User size={80} className="mx-auto mb-4 text-font-secondary" />
+          <User size={80} className="mx-auto mb-4 text-font-primarly" />
           <p className="text-2xl font-bold text-font-primarly">No user found.</p>
         </div>
       </div>
@@ -139,7 +128,7 @@ function Profile() {
   return (
     <div className="min-h-screen bg-taskhub-light">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="bg-taskhub-middle rounded-xl p-8 mb-8">
+        <div className="bg-taskhub-middle rounded-2xl p-8 mb-8">
           <div className="flex items-center space-x-6">
             <div className="bg-taskhub-dark rounded-full p-4">
               <User size={48} className="text-font-primarly" />
@@ -172,7 +161,7 @@ function Profile() {
           </div>
         </div>
 
-        <div className="bg-taskhub-middle rounded-xl p-8">
+        <div className="bg-taskhub-middle rounded-2xl p-8">
           <h2 className="text-2xl font-bold text-font-primarly mb-6 flex items-center space-x-2">
             <span>Your Tasks</span>
             {userTasks.data && userTasks.data.length > 0 && (
@@ -227,7 +216,7 @@ export default function ProfileRoute<TParent extends AnyRoute>(
 ) {
   return createRoute({
     getParentRoute: () => parentRoute,
-    path: "/demo/profile",
+    path: "/profile",
     component: Profile,
   });
 }
