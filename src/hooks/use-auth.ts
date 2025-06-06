@@ -17,6 +17,7 @@ import {
   type CurrentUserResponse,
   type LogoutRequest,
   type LogoutResponse,
+  type Oauth2Response,
 } from "@/lib/types/auth";
 import { useAuthStore } from "../store/auth";
 
@@ -95,10 +96,8 @@ export const useAuth = () => {
     },
   });
 
-  const oauth2 = useMutation<void, AxiosError<ApiError>, void>({
-    mutationFn: async () => {
-      await auth.oauth2();
-    },
+  const oauth2 = useMutation<Oauth2Response, AxiosError<ApiError>>({
+    mutationFn: () => auth.oauth2(),
   });
 
   return {

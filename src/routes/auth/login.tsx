@@ -23,7 +23,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const {
     login,
-    oauth2: { mutate: oauth2 },
+    oauth2: { mutateAsync: oauth2 },
   } = useAuth();
 
   const form = useAppForm({
@@ -129,7 +129,14 @@ const LoginPage = () => {
               <button
                 type="button"
                 className="cursor-pointer text-slate-500 font-bold ml-2 hover:underline hover:text-slate-400 transition-all duration-500 ease-in-out"
-                onClick={() => oauth2()}
+                onClick={async () => {
+                  try {
+                    const { url } = await oauth2();
+                    window.location.href = url; 
+                  } catch (e) {
+                    console.error("OAuth failed", e);
+                  }
+                }}
               >
                 Login with Google
               </button>

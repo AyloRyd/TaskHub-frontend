@@ -23,6 +23,7 @@ import { useTasks } from "@/hooks/use-tasks";
 import { z } from "zod";
 import type { Visibility } from "@/lib/types/tasks";
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 const createTaskSchema = z.object({
   name: z
@@ -35,8 +36,9 @@ const createTaskSchema = z.object({
 });
 
 const CreateTask = () => {
-  const [open, setOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
   const { createTask } = useTasks();
+  const navigate = useNavigate();
 
   const form = useAppForm({
     defaultValues: {
@@ -59,14 +61,15 @@ const CreateTask = () => {
       },
       onSubmit: async ({ value }) => {
         createTask.mutate(
-          { 
-            name: value.name, 
-            visibility: value.visibility 
+          {
+            name: value.name,
+            visibility: value.visibility,
           },
           {
             onSuccess: () => {
               form.reset();
-              setOpen(false); 
+              setOpen(false);
+              navigate({ to: "/profile" });
             },
           }
         );
@@ -81,15 +84,13 @@ const CreateTask = () => {
     : null;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}> 
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-taskhub-middle hover:bg-taskhub-dark text-font-primarly cursor-pointer py-6 shadow-none rounded-xl">
           Create new task
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="sm:max-w-[425px] rounded-2xl"
-      >
+      <DialogContent className="sm:max-w-[425px] rounded-2xl">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -103,16 +104,13 @@ const CreateTask = () => {
               Enter task name and select visibility
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="grid gap-4 py-4">
             <form.AppField name="name">
               {(field) => (
                 <div className="grid gap-3">
                   <Label htmlFor="task-name">Name</Label>
-                  <field.TextField 
-                    label=""
-                    placeholder="Enter task name"
-                  />
+                  <field.TextField label="" placeholder="Enter task name" />
                 </div>
               )}
             </form.AppField>
@@ -121,9 +119,11 @@ const CreateTask = () => {
               {(field) => (
                 <div className="grid gap-3 mb-4">
                   <Label htmlFor="task-visibility">Visibility</Label>
-                  <Select 
-                    value={field.state.value ?? ""} 
-                    onValueChange={(val: string) => field.handleChange(val as Visibility)}
+                  <Select
+                    value={field.state.value ?? ""}
+                    onValueChange={(val: string) =>
+                      field.handleChange(val as Visibility)
+                    }
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select visibility" />
@@ -152,16 +152,16 @@ const CreateTask = () => {
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 className="cursor-pointer"
                 disabled={createTask.isPending}
               >
                 Cancel
               </Button>
             </DialogClose>
-            
+
             <form.AppForm>
               <form.SubscribeButton
                 label={createTask.isPending ? "Creating..." : "Create Task"}
@@ -175,6 +175,5 @@ const CreateTask = () => {
     </Dialog>
   );
 };
-
 
 export default CreateTask;

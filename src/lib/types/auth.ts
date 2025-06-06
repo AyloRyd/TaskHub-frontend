@@ -38,3 +38,7 @@ export type DeleteUserResponse = void;
 
 export type LogoutRequest = void;
 export type LogoutResponse = void;
+
+export type Oauth2Response = {
+  url: string;
+}

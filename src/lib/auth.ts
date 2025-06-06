@@ -12,6 +12,7 @@ import {
   type DeleteUserResponse,
   type CurrentUserResponse,
   type LogoutResponse,
+  type Oauth2Response,
 } from "@/lib/types/auth";
 import { type ApiError } from "@/lib/axios";
 
@@ -101,10 +102,10 @@ export class auth {
     }
   }
 
-  static async oauth2(): Promise<void> {
+  static async oauth2(): Promise<Oauth2Response> {
     try {
-      const { data } = await this.client.get("/oauth2/google");
-      return data;
+      const { data } = await this.client.get<string>("/oauth2/google");
+      return { url: data };
     } catch (e) {
       throw e as AxiosError<ApiError>;
     }
