@@ -22,8 +22,7 @@ import {
 import { useAuthStore } from "../store/auth";
 
 export const useAuth = () => {
-  const { setAuthenticated, setUser, logout: storeLogout, isAuthenticated } =
-    useAuthStore();
+  const { setAuthenticated, setUser, logout: storeLogout } = useAuthStore();
   const queryClient = useQueryClient();
 
   const register = useMutation<
@@ -34,11 +33,7 @@ export const useAuth = () => {
     mutationFn: (payload) => auth.register(payload),
   });
 
-  const login = useMutation<
-    LoginResponse,
-    AxiosError<ApiError>,
-    LoginRequest
-  >({
+  const login = useMutation<LoginResponse, AxiosError<ApiError>, LoginRequest>({
     mutationFn: (credentials) => auth.login(credentials),
     onSuccess: (data, variables) => {
       setAuthenticated(true);
@@ -83,10 +78,13 @@ export const useAuth = () => {
   const currentUser = useQuery<CurrentUserResponse, AxiosError<ApiError>>({
     queryKey: ["currentUser"],
     queryFn: () => auth.current(),
-    enabled: isAuthenticated !== false,
   });
 
-  const logout = useMutation<LogoutResponse, AxiosError<ApiError>, LogoutRequest>({
+  const logout = useMutation<
+    LogoutResponse,
+    AxiosError<ApiError>,
+    LogoutRequest
+  >({
     mutationFn: async () => {
       await auth.logout();
       storeLogout();
@@ -108,6 +106,6 @@ export const useAuth = () => {
     deleteAccount,
     currentUser,
     logout,
-    oauth2
+    oauth2,
   };
 };
