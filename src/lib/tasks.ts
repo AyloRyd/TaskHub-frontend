@@ -11,6 +11,10 @@ import {
   type SearchTasksResponse,
   type UpdateTaskRequest,
   type UpdateTaskResponse,
+  type GetTaskFullRequest,
+  type GetTaskFullResponse,
+  type AddAttachmentRequest,
+  type AddAttachmentResponse,
 } from "@/lib/types/tasks";
 
 export class tasks {
@@ -50,6 +54,18 @@ export class tasks {
     }
   }
 
+  static async getTaskFull(payload: GetTaskFullRequest): Promise<GetTaskFullResponse> {
+    try {
+      const { data } = await this.client.post<GetTaskFullResponse>(
+        "/tasks/full",
+        payload
+      );
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError>;
+    }
+  }
+
   static async update(payload: UpdateTaskRequest): Promise<UpdateTaskResponse> {
     try {
       const { data } = await this.client.put<UpdateTaskResponse>(
@@ -70,13 +86,36 @@ export class tasks {
     }
   }
 
-  static async search(
-    payload: SearchTasksRequest
-  ): Promise<SearchTasksResponse> {
+  static async search(payload: SearchTasksRequest): Promise<SearchTasksResponse> {
     try {
       const { data } = await this.client.post<SearchTasksResponse>(
         "/tasks/search",
         payload
+      );
+      return data;
+    } catch (e) {
+      throw e as AxiosError<ApiError>;
+    }
+  }
+
+  static async addAttachment(payload: AddAttachmentRequest): Promise<AddAttachmentResponse> {
+    try {
+      const formData = new FormData();
+      formData.append('attachment_type', payload.attachment_type);
+      formData.append('data', payload.data);
+      
+      if (payload.file) {
+        formData.append('file', payload.file);
+      }
+
+      const { data } = await this.client.post<AddAttachmentResponse>(
+        `/tasks/attachments/${payload.id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
       return data;
     } catch (e) {

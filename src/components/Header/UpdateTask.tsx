@@ -35,7 +35,13 @@ const createTaskSchema = z.object({
   }),
 });
 
-const UpdateTask = ({ task }: { task: Task }) => {
+const UpdateTask = ({
+  task,
+  className,
+}: {
+  task: Task;
+  className?: string;
+}) => {
   const [open, setOpen] = useState(false);
   const { update } = useTasks();
 
@@ -87,7 +93,11 @@ const UpdateTask = ({ task }: { task: Task }) => {
       <DialogTrigger asChild>
         <Button
           size="sm"
-          className="justify-start gap-2 h-12 text-lg cursor-pointer rounded-none rounded-t-lg bg-taskhub-middle hover:bg-taskhub-dark text-font-primarly"
+          className={
+            className
+              ? className
+              : "justify-start gap-2 h-12 text-lg cursor-pointer rounded-none rounded-t-lg bg-taskhub-middle hover:bg-taskhub-dark text-font-primarly"
+          }
         >
           <Edit size={14} />
           Edit Task

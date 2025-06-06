@@ -1,13 +1,13 @@
 import { createRoute } from "@tanstack/react-router";
 import type { AnyRoute } from "@tanstack/react-router";
-import { LoaderCircle, User, Mail, Shield, CheckCircle, XCircle } from "lucide-react";
+import { LoaderCircle, User, Mail, Shield, XCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useAuthStore } from "@/store/auth";
 import { useTasks } from "@/hooks/use-tasks";
 import TaskCard from "@/components/TaskCard";
 
 function Profile() {
-  const { isAuthenticated, user: userData } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const {
     currentUser: { data: user, isLoading, error },
   } = useAuth();
@@ -79,7 +79,7 @@ function Profile() {
                   <Mail size={18} className="text-font-secondary" />
                   <span className="text-font-primarly">{user.email}</span>
                 </div>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   {userData?.is_verified ? (
                     <CheckCircle size={18} className="text-green-500" />
                   ) : (
@@ -88,7 +88,7 @@ function Profile() {
                   <span className="text-font-primarly">
                     {userData?.is_verified ? "Verified" : "Not verified"}
                   </span>
-                </div>
+                </div> */}
                 <div className="flex items-center space-x-2">
                   <Shield size={18} className="text-font-secondary" />
                   <span className="text-font-primarly capitalize">{user.role}</span>

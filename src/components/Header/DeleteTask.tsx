@@ -13,7 +13,13 @@ import {
 import { useTasks } from "@/hooks/use-tasks";
 import type { Task } from "@/lib/types/tasks";
 
-const DeleteTask = ({ task }: { task: Task }) => {
+const DeleteTask = ({
+  task,
+  className,
+}: {
+  task: Task;
+  className?: string;
+}) => {
   const {
     remove: { mutate: remove },
   } = useTasks();
@@ -24,8 +30,11 @@ const DeleteTask = ({ task }: { task: Task }) => {
         <DialogTrigger asChild>
           <Button
             size="sm"
-            className="justify-start gap-2 h-12 w-full text-lg text-red-600 hover:text-red-70
-                       cursor-pointer rounded-none rounded-b-lg bg-taskhub-middle hover:bg-taskhub-dark"
+            className={
+              className
+                ? className
+                : "justify-start gap-2 h-12 w-full text-lg text-red-600 hover:text-red-70 cursor-pointer rounded-none rounded-b-lg bg-taskhub-middle hover:bg-taskhub-dark"
+            }
           >
             <Trash2 size={14} />
             Delete Task

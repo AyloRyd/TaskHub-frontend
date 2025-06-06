@@ -11,6 +11,9 @@ import {
   type SearchTasksResponse,
   type UpdateTaskRequest,
   type UpdateTaskResponse,
+  type GetTaskFullResponse,
+  type AddAttachmentRequest,
+  type AddAttachmentResponse,
 } from "@/lib/types/tasks";
 import { type ApiError } from "@/lib/axios";
 
@@ -34,8 +37,9 @@ export const useTasks = () => {
     UpdateTaskRequest
   >({
     mutationFn: (payload) => tasks.update(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["myTasks"] });
+      queryClient.invalidateQueries({ queryKey: ["taskFull", data.id] });
     },
   });
 
@@ -49,6 +53,13 @@ export const useTasks = () => {
     queryKey: ["myTasks"],
     queryFn: () => tasks.getMyTasks(),
   });
+
+  const getTaskFull = (taskId: number) =>
+    useQuery<GetTaskFullResponse, AxiosError<ApiError>>({
+      queryKey: ["taskFull", taskId],
+      queryFn: () => tasks.getTaskFull({ task_id: taskId }),
+      enabled: !!taskId,
+    });
 
   const remove = useMutation<
     DeleteTaskResponse,
@@ -69,6 +80,17 @@ export const useTasks = () => {
     mutationFn: (payload) => tasks.search(payload),
   });
 
+  const addAttachment = useMutation<
+    AddAttachmentResponse,
+    AxiosError<ApiError>,
+    AddAttachmentRequest
+  >({
+    mutationFn: (payload) => tasks.addAttachment(payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["taskFull", data.task_id] });
+    },
+  });
+
   return {
     createTask,
     update,
@@ -76,5 +98,7 @@ export const useTasks = () => {
     search,
     getUserTasks,
     getMyTasks,
+    getTaskFull,
+    addAttachment,
   };
 };

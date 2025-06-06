@@ -132,7 +132,7 @@ const RegisterFormPage = () => {
             <div className="flex justify-center w-full mt-12">
               <p>Already have an account?</p>
               <Link
-                to="/"
+                to="/auth/login"
                 className="ml-2 font-bold transition-all duration-500 ease-in-out text-slate-500 hover:underline hover:text-slate-400"
               >
                 Login!
