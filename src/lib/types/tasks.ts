@@ -32,3 +32,9 @@ export type DeleteTaskRequest = {
 };
 
 export type DeleteTaskResponse = void;
+
+export type SearchTasksRequest = {
+  name: string;
+}
+
+export type SearchTasksResponse = Task[];

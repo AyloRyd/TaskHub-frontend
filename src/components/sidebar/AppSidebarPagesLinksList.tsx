@@ -1,12 +1,14 @@
 import { Link } from "@tanstack/react-router";
-// import { Home, Search, FileText, Folder, Settings, User } from "lucide-react";
-import { Home, User } from "lucide-react";
+// import { Home, Search, FileText, Folder, User } from "lucide-react";
+import { Home, Search, User } from "lucide-react";
 import { SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { useMatchRoute } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/auth";
 
 const sidebarItems = [
   { to: "/", icon: Home, label: "Home" },
+  { to: "/explore", icon: Search, label: "Explore" },
   // { to: "/demo/form/simple", icon: Search, label: "Simple Form" },
   // { to: "/demo/form/address", icon: FileText, label: "Address Form" },
   // { to: "/demo/table", icon: Folder, label: "TanStack Table" },
@@ -16,11 +18,17 @@ const sidebarItems = [
 const AppSidebarPagesLinksList = () => {
   const matchRoute = useMatchRoute();
   const { isMobile, toggleSidebar } = useSidebar();
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <div className="mt-6 flex flex-col gap-4">
       {sidebarItems.map(({ to, icon: Icon, label }) => {
         let isActive = matchRoute({ to: to, fuzzy: false });
+
+        if (to === "/profile" && !isAuthenticated) {
+          return null; 
+        }
+
         return (
           <SidebarMenuItem key={to}>
             <Link

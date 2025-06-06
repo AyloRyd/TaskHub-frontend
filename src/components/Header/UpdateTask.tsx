@@ -93,7 +93,11 @@ const UpdateTask = ({ task }: { task: Task }) => {
           Edit Task
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] rounded-2xl">
+      <DialogContent
+        className="sm:max-w-[425px] rounded-2xl"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -113,7 +117,7 @@ const UpdateTask = ({ task }: { task: Task }) => {
               {(field) => (
                 <div className="grid gap-3">
                   <Label htmlFor="task-name">Name</Label>
-                  <field.TextField label="" placeholder="Enter task name"/>
+                  <field.TextField label="" placeholder="Enter task name" />
                 </div>
               )}
             </form.AppField>
@@ -122,23 +126,25 @@ const UpdateTask = ({ task }: { task: Task }) => {
               {(field) => (
                 <div className="grid gap-3 mb-4">
                   <Label htmlFor="task-visibility">Visibility</Label>
-                  <Select
-                    value={field.state.value ?? ""}
-                    onValueChange={(val: string) =>
-                      field.handleChange(val as Visibility)
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select visibility" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="Private">Private</SelectItem>
-                        <SelectItem value="Public">Public</SelectItem>
-                        <SelectItem value="Paid">Paid</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <div onFocus={(e) => e.stopPropagation()}>
+                    <Select
+                      value={field.state.value ?? ""}
+                      onValueChange={(val: string) =>
+                        field.handleChange(val as Visibility)
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select visibility" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="Private">Private</SelectItem>
+                          <SelectItem value="Public">Public</SelectItem>
+                          <SelectItem value="Paid">Paid</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   {field.state.meta.errors && (
                     <p className="text-red-400 text-sm">
                       {field.state.meta.errors[0]}

@@ -13,9 +13,9 @@ import { useAuth } from "@/hooks/use-auth";
 const ProfileOptionsPopover = () => {
   const { isMobile, toggleSidebar } = useSidebar();
   const { user } = useAuthStore();
-  const { 
-    logout: { mutate: logout }, 
-    deleteAccount: { mutate: deleteAccount } 
+  const {
+    logout: { mutate: logout },
+    deleteAccount: { mutate: deleteAccount, error: deleteError },
   } = useAuth();
 
   return (
@@ -59,6 +59,9 @@ const ProfileOptionsPopover = () => {
           to="/"
           onClick={() => {
             deleteAccount();
+            if (deleteError) {
+              alert(deleteError.message);
+            }
             if (isMobile) toggleSidebar();
           }}
           className="px-4 py-4 transition-colors duration-200 text-font-primarly bg-taskhub-dark hover:bg-taskhub-darker rounded-b-xl"

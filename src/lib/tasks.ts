@@ -7,6 +7,8 @@ import {
   type DeleteTaskRequest,
   type DeleteTaskResponse,
   type GetUserTasksResponse,
+  type SearchTasksRequest,
+  type SearchTasksResponse,
   type UpdateTaskRequest,
   type UpdateTaskResponse,
 } from "@/lib/types/tasks";
@@ -48,9 +50,7 @@ export class tasks {
     }
   }
 
-  static async update(
-    payload: UpdateTaskRequest
-  ): Promise<UpdateTaskResponse> {
+  static async update(payload: UpdateTaskRequest): Promise<UpdateTaskResponse> {
     try {
       const { data } = await this.client.put<UpdateTaskResponse>(
         `/tasks/${payload.id}`,
@@ -62,11 +62,23 @@ export class tasks {
     }
   }
 
-  static async remove(
-    payload: DeleteTaskRequest
-  ): Promise<DeleteTaskResponse> {
+  static async remove(payload: DeleteTaskRequest): Promise<DeleteTaskResponse> {
     try {
       await this.client.delete(`/tasks/${payload.id}`);
+    } catch (e) {
+      throw e as AxiosError<ApiError>;
+    }
+  }
+
+  static async search(
+    payload: SearchTasksRequest
+  ): Promise<SearchTasksResponse> {
+    try {
+      const { data } = await this.client.post<SearchTasksResponse>(
+        "/tasks/search",
+        payload
+      );
+      return data;
     } catch (e) {
       throw e as AxiosError<ApiError>;
     }

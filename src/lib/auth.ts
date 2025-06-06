@@ -73,7 +73,7 @@ export class auth {
 
   static async delete(): Promise<DeleteUserResponse> {
     try {
-      const { data } = await this.client.post<DeleteUserResponse>(
+      const { data } = await this.client.delete<DeleteUserResponse>(
         "/auth/delete"
       );
       return data;

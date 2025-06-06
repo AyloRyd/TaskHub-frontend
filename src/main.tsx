@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import {
   Link,
@@ -13,6 +13,8 @@ import FormSimpleDemo from "./routes/demo.form.simple.tsx";
 import FormAddressDemo from "./routes/demo.form.address.tsx";
 import TableDemo from "./routes/demo.table.tsx";
 import ProfileRoute from "./routes/profile.tsx";
+import ExploreRoute from "./routes/explore.tsx";
+import TaskDetailRoute from "./routes/task.tsx";
 
 import LoginRoute from "./routes/auth/login.tsx";
 import RegisterRoute from "./routes/auth/register.tsx";
@@ -33,17 +35,32 @@ import reportWebVitals from "./reportWebVitals.ts";
 import App from "./App.tsx";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "./components/Header/Header.tsx";
+import { useAuth } from "./hooks/use-auth.ts";
+import { useAuthStore } from "./store/auth.ts";
+import type { User } from "./lib/types/auth.ts";
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <SidebarProvider>
-        <Outlet />
-      </SidebarProvider>
-      {/* <TanStackRouterDevtools />
+  component: () => {
+    const { currentUser } = useAuth();
+    const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
+    const setUser = useAuthStore((state) => state.setUser);
+
+    useEffect(() => {
+      if (currentUser.isSuccess && currentUser.data) {
+        setAuthenticated(true);
+        setUser(currentUser.data as User);
+      }
+    }, [currentUser.isSuccess, currentUser.data, setAuthenticated, setUser]);
+    return (
+      <>
+        <SidebarProvider>
+          <Outlet />
+        </SidebarProvider>
+        {/* <TanStackRouterDevtools />
           <TanStackQueryLayout /> */}
-    </>
-  ),
+      </>
+    );
+  },
 });
 
 const appLayoutRoute = createRoute({
@@ -65,14 +82,7 @@ const appLayoutRoute = createRoute({
 const authLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: () => (
-    <div
-      className="relative flex items-center justify-center h-screen w-screen p-4 text-white"
-      style={{
-        backgroundImage: 'url("/auth-bg.png")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="relative flex items-center justify-center h-screen w-screen p-4 text-white bg-[url('/auth-bg.jpg')] bg-cover bg-center">
       <Link
         className="absolute p-3 top-4 left-4 bg-black border-[1px] border-stone-400 hover:bg-stone-950 rounded-xl"
         to="/"
@@ -98,6 +108,8 @@ const routeTree = rootRoute.addChildren([
     FormAddressDemo(appLayoutRoute),
     TableDemo(appLayoutRoute),
     ProfileRoute(appLayoutRoute),
+    ExploreRoute(appLayoutRoute),
+    TaskDetailRoute(appLayoutRoute),
   ]),
   authLayoutRoute.addChildren([
     LoginRoute(authLayoutRoute),

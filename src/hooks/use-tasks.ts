@@ -7,6 +7,8 @@ import {
   type DeleteTaskRequest,
   type DeleteTaskResponse,
   type GetUserTasksResponse,
+  type SearchTasksRequest,
+  type SearchTasksResponse,
   type UpdateTaskRequest,
   type UpdateTaskResponse,
 } from "@/lib/types/tasks";
@@ -59,10 +61,19 @@ export const useTasks = () => {
     },
   });
 
+  const search = useMutation<
+    SearchTasksResponse,
+    AxiosError<ApiError>,
+    SearchTasksRequest
+  >({
+    mutationFn: (payload) => tasks.search(payload),
+  });
+
   return {
     createTask,
     update,
     remove,
+    search,
     getUserTasks,
     getMyTasks,
   };
